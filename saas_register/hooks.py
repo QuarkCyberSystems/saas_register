@@ -5,6 +5,57 @@ app_description = "Small app to track all the Saas accounts"
 app_email = "info@quarkcs.com"
 app_license = "mit"
 
+
+# ---------------------------------------------------------------------------
+# Required apps
+# ---------------------------------------------------------------------------
+
+required_apps = ["erpnext", "hrms"]
+
+
+# ---------------------------------------------------------------------------
+# Document events
+# ---------------------------------------------------------------------------
+
+doc_events = {
+	"Employee": {
+		"on_update": "saas_register.saas_register.employee_hooks.on_employee_update",
+		"after_insert": "saas_register.saas_register.employee_hooks.on_employee_update",
+	},
+}
+
+
+# ---------------------------------------------------------------------------
+# Permissions
+# ---------------------------------------------------------------------------
+
+permission_query_conditions = {
+	"SaaS Access": "saas_register.saas_register.permissions.saas_access_query",
+}
+
+has_permission = {
+	"SaaS Access": "saas_register.saas_register.permissions.saas_access_has_permission",
+}
+
+
+# ---------------------------------------------------------------------------
+# Fixtures (auto-imported on install/migrate from saas_register/fixtures/*.json)
+# ---------------------------------------------------------------------------
+
+fixtures = [
+	{"dt": "Role", "filters": [["role_name", "in", ["IT Manager"]]]},
+	"SaaS Category",
+]
+
+
+# ---------------------------------------------------------------------------
+# Connections shown on standard doctypes (Employee → SaaS Access)
+# ---------------------------------------------------------------------------
+
+override_doctype_dashboards = {
+	"Employee": "saas_register.saas_register.employee_dashboard.extend_employee_dashboard",
+}
+
 # Apps
 # ------------------
 
@@ -86,7 +137,7 @@ app_license = "mit"
 # ------------
 
 # before_install = "saas_register.install.before_install"
-# after_install = "saas_register.install.after_install"
+after_install = "saas_register.install.after_install"
 
 # Uninstallation
 # ------------

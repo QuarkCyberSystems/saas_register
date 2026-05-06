@@ -1,0 +1,10 @@
+[
+ {
+  "doctype": "Role",
+  "role_name": "IT Manager",
+  "desk_access": 1,
+  "disabled": 0,
+  "is_custom": 1,
+  "name": "IT Manager"
+ }
+]

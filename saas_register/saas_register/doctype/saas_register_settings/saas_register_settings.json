@@ -1,0 +1,130 @@
+{
+ "actions": [],
+ "creation": "2026-05-06 00:00:00",
+ "doctype": "DocType",
+ "document_type": "Setup",
+ "engine": "InnoDB",
+ "field_order": [
+  "role_mapping_section",
+  "felix_user",
+  "tech_lead_user",
+  "column_break_role",
+  "dept_head_default_user",
+  "hr_user",
+  "defaults_section",
+  "default_cost_center",
+  "default_currency",
+  "column_break_defaults",
+  "default_offboarding_sla_days",
+  "notify_email"
+ ],
+ "fields": [
+  {
+   "fieldname": "role_mapping_section",
+   "fieldtype": "Section Break",
+   "label": "Role Mapping (role_key → User)"
+  },
+  {
+   "fieldname": "felix_user",
+   "fieldtype": "Link",
+   "label": "Felix (IT)",
+   "options": "User",
+   "description": "Resolved when an offboarding step has assigned_role_key=felix"
+  },
+  {
+   "fieldname": "tech_lead_user",
+   "fieldtype": "Link",
+   "label": "Tech Lead",
+   "options": "User"
+  },
+  {
+   "fieldname": "column_break_role",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "dept_head_default_user",
+   "fieldtype": "Link",
+   "label": "Department Head (default)",
+   "options": "User",
+   "description": "Fallback when employee's department has no head user resolved"
+  },
+  {
+   "fieldname": "hr_user",
+   "fieldtype": "Link",
+   "label": "HR",
+   "options": "User"
+  },
+  {
+   "fieldname": "defaults_section",
+   "fieldtype": "Section Break",
+   "label": "Defaults"
+  },
+  {
+   "fieldname": "default_cost_center",
+   "fieldtype": "Link",
+   "label": "Default Cost Center",
+   "options": "Cost Center"
+  },
+  {
+   "fieldname": "default_currency",
+   "fieldtype": "Link",
+   "label": "Default Currency",
+   "options": "Currency",
+   "default": "AED"
+  },
+  {
+   "fieldname": "column_break_defaults",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "default_offboarding_sla_days",
+   "fieldtype": "Int",
+   "label": "Default Offboarding SLA (days)",
+   "default": 1
+  },
+  {
+   "fieldname": "notify_email",
+   "fieldtype": "Data",
+   "label": "Notification Email",
+   "options": "Email",
+   "description": "Sent a summary when an offboarding workflow is created"
+  }
+ ],
+ "issingle": 1,
+ "links": [],
+ "modified": "2026-05-06 00:00:00",
+ "modified_by": "Administrator",
+ "module": "Saas Register",
+ "name": "SaaS Register Settings",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "role": "System Manager",
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "share": 1,
+   "write": 1
+  },
+  {
+   "role": "IT Manager",
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}

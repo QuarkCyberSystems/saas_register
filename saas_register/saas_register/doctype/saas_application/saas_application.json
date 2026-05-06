@@ -1,0 +1,334 @@
+{
+ "actions": [],
+ "allow_import": 1,
+ "allow_rename": 1,
+ "autoname": "format:SAAS-{####}",
+ "creation": "2026-05-06 00:00:00",
+ "description": "A paid SaaS application tracked for inventory, cost, seats and access.",
+ "doctype": "DocType",
+ "document_type": "Setup",
+ "engine": "InnoDB",
+ "field_order": [
+  "details_section",
+  "app_name",
+  "vendor",
+  "category",
+  "plan",
+  "column_break_details",
+  "login_url",
+  "seats_section",
+  "seats_paid",
+  "column_break_seats",
+  "seats_active",
+  "billing_section",
+  "currency",
+  "monthly_cost",
+  "annual_cost",
+  "billing_cycle",
+  "column_break_billing",
+  "renewal_date",
+  "auto_renew",
+  "cost_center",
+  "linked_invoice",
+  "sso_vault_section",
+  "sso_status",
+  "column_break_sso",
+  "vault_status",
+  "vault_location",
+  "ownership_section",
+  "business_owner",
+  "column_break_ownership",
+  "status",
+  "offboarding_section",
+  "offboarding_steps",
+  "notes_section",
+  "description",
+  "notes"
+ ],
+ "fields": [
+  {
+   "fieldname": "details_section",
+   "fieldtype": "Section Break",
+   "label": "Application"
+  },
+  {
+   "fieldname": "app_name",
+   "fieldtype": "Data",
+   "label": "Application Name",
+   "reqd": 1,
+   "unique": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1
+  },
+  {
+   "fieldname": "vendor",
+   "fieldtype": "Link",
+   "label": "Vendor",
+   "options": "Supplier",
+   "in_list_view": 1,
+   "in_standard_filter": 1
+  },
+  {
+   "fieldname": "category",
+   "fieldtype": "Link",
+   "label": "Category",
+   "options": "SaaS Category",
+   "in_standard_filter": 1
+  },
+  {
+   "fieldname": "plan",
+   "fieldtype": "Data",
+   "label": "Plan / Tier",
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "column_break_details",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "login_url",
+   "fieldtype": "Data",
+   "label": "Login URL",
+   "options": "URL"
+  },
+  {
+   "fieldname": "business_owner",
+   "fieldtype": "Link",
+   "label": "Business Owner",
+   "options": "Employee",
+   "in_list_view": 1,
+   "in_standard_filter": 1
+  },
+  {
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "label": "Status",
+   "options": "Active\nReview\nKill-Replace",
+   "default": "Active",
+   "reqd": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1
+  },
+  {
+   "fieldname": "sso_vault_section",
+   "fieldtype": "Section Break",
+   "label": "SSO & Vault"
+  },
+  {
+   "fieldname": "sso_status",
+   "fieldtype": "Select",
+   "label": "SSO Status",
+   "options": "Yes - Google Workspace\nNo\nNot Applicable",
+   "default": "Not Applicable",
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "column_break_sso",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "vault_status",
+   "fieldtype": "Select",
+   "label": "Vault Status",
+   "options": "Yes\nNo\nNot Applicable",
+   "default": "Not Applicable",
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "vault_location",
+   "fieldtype": "Data",
+   "label": "Vault Location",
+   "description": "e.g. \"1Password – Tech/Infra\""
+  },
+  {
+   "fieldname": "ownership_section",
+   "fieldtype": "Section Break",
+   "label": "Ownership & Status"
+  },
+  {
+   "fieldname": "column_break_ownership",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "seats_section",
+   "fieldtype": "Section Break",
+   "label": "Seats"
+  },
+  {
+   "fieldname": "seats_paid",
+   "fieldtype": "Int",
+   "label": "Seats Paid",
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "column_break_seats",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "seats_active",
+   "fieldtype": "Int",
+   "label": "Seats Active",
+   "read_only": 1,
+   "in_list_view": 1,
+   "description": "Auto-computed from active SaaS Access records"
+  },
+  {
+   "fieldname": "billing_section",
+   "fieldtype": "Section Break",
+   "label": "Billing"
+  },
+  {
+   "fieldname": "currency",
+   "fieldtype": "Link",
+   "label": "Currency",
+   "options": "Currency",
+   "default": "AED"
+  },
+  {
+   "fieldname": "monthly_cost",
+   "fieldtype": "Currency",
+   "label": "Monthly Cost",
+   "options": "currency",
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "annual_cost",
+   "fieldtype": "Currency",
+   "label": "Annual Cost (calculated)",
+   "options": "currency",
+   "read_only": 1
+  },
+  {
+   "fieldname": "billing_cycle",
+   "fieldtype": "Select",
+   "label": "Billing Cycle",
+   "options": "Monthly\nAnnual\nMulti-year",
+   "default": "Annual"
+  },
+  {
+   "fieldname": "column_break_billing",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "renewal_date",
+   "fieldtype": "Date",
+   "label": "Renewal Date",
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "auto_renew",
+   "fieldtype": "Check",
+   "label": "Auto Renew"
+  },
+  {
+   "fieldname": "cost_center",
+   "fieldtype": "Link",
+   "label": "Cost Center",
+   "options": "Cost Center",
+   "in_standard_filter": 1
+  },
+  {
+   "fieldname": "linked_invoice",
+   "fieldtype": "Link",
+   "label": "Linked Invoice",
+   "options": "Purchase Invoice"
+  },
+  {
+   "fieldname": "offboarding_section",
+   "fieldtype": "Section Break",
+   "label": "Offboarding"
+  },
+  {
+   "fieldname": "offboarding_steps",
+   "fieldtype": "Table",
+   "label": "Offboarding Steps",
+   "options": "SaaS Offboarding Step"
+  },
+  {
+   "fieldname": "notes_section",
+   "fieldtype": "Section Break",
+   "label": "Notes"
+  },
+  {
+   "fieldname": "description",
+   "fieldtype": "Small Text",
+   "label": "Description"
+  },
+  {
+   "fieldname": "notes",
+   "fieldtype": "Text Editor",
+   "label": "Notes"
+  }
+ ],
+ "links": [
+  {
+   "group": "Access",
+   "link_doctype": "SaaS Access",
+   "link_fieldname": "saas_application"
+  }
+ ],
+ "modified": "2026-05-06 00:00:00",
+ "modified_by": "Administrator",
+ "module": "Saas Register",
+ "name": "SaaS Application",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "role": "System Manager",
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "share": 1,
+   "write": 1
+  },
+  {
+   "role": "IT Manager",
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "share": 1,
+   "write": 1
+  },
+  {
+   "role": "HR Manager",
+   "read": 1,
+   "report": 1,
+   "export": 1,
+   "print": 1
+  },
+  {
+   "role": "Department Head",
+   "read": 1,
+   "report": 1,
+   "export": 1
+  }
+ ],
+ "search_fields": "app_name,vendor,category,plan",
+ "show_title_field_in_link": 1,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [
+  {
+   "color": "Green",
+   "title": "Active"
+  },
+  {
+   "color": "Yellow",
+   "title": "Review"
+  },
+  {
+   "color": "Red",
+   "title": "Kill-Replace"
+  }
+ ],
+ "title_field": "app_name",
+ "track_changes": 1
+}

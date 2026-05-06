@@ -1,0 +1,68 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2026-05-06 00:00:00",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "sequence",
+  "step_description",
+  "assigned_role_key",
+  "estimated_minutes",
+  "requires_password_rotation"
+ ],
+ "fields": [
+  {
+   "fieldname": "sequence",
+   "fieldtype": "Int",
+   "label": "Sequence",
+   "in_list_view": 1,
+   "columns": 1
+  },
+  {
+   "fieldname": "step_description",
+   "fieldtype": "Data",
+   "label": "Step Description",
+   "reqd": 1,
+   "in_list_view": 1,
+   "columns": 4
+  },
+  {
+   "fieldname": "assigned_role_key",
+   "fieldtype": "Select",
+   "label": "Assigned Role",
+   "options": "felix\ntech_lead\ndept_head\nhr",
+   "default": "felix",
+   "in_list_view": 1,
+   "columns": 2,
+   "description": "Resolved to a User via SaaS Register Settings"
+  },
+  {
+   "fieldname": "estimated_minutes",
+   "fieldtype": "Int",
+   "label": "Est. Minutes",
+   "in_list_view": 1,
+   "columns": 1
+  },
+  {
+   "fieldname": "requires_password_rotation",
+   "fieldtype": "Check",
+   "label": "Requires Password Rotation",
+   "in_list_view": 1,
+   "columns": 2
+  }
+ ],
+ "istable": 1,
+ "links": [],
+ "modified": "2026-05-06 00:00:00",
+ "modified_by": "Administrator",
+ "module": "Saas Register",
+ "name": "SaaS Offboarding Step",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "sequence",
+ "sort_order": "ASC",
+ "states": [],
+ "track_changes": 1
+}

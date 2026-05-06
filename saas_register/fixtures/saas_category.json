@@ -1,0 +1,14 @@
+[
+ {"doctype": "SaaS Category", "name": "Productivity", "category_name": "Productivity"},
+ {"doctype": "SaaS Category", "name": "Communication", "category_name": "Communication"},
+ {"doctype": "SaaS Category", "name": "Development", "category_name": "Development"},
+ {"doctype": "SaaS Category", "name": "Design", "category_name": "Design"},
+ {"doctype": "SaaS Category", "name": "CRM-Sales", "category_name": "CRM-Sales"},
+ {"doctype": "SaaS Category", "name": "Finance", "category_name": "Finance"},
+ {"doctype": "SaaS Category", "name": "HR", "category_name": "HR"},
+ {"doctype": "SaaS Category", "name": "Hosting-Infra", "category_name": "Hosting-Infra"},
+ {"doctype": "SaaS Category", "name": "Web Hosting / Infrastructure", "category_name": "Web Hosting / Infrastructure"},
+ {"doctype": "SaaS Category", "name": "CRM / Sales", "category_name": "CRM / Sales"},
+ {"doctype": "SaaS Category", "name": "Finance / Accounting", "category_name": "Finance / Accounting"},
+ {"doctype": "SaaS Category", "name": "Other", "category_name": "Other"}
+]
