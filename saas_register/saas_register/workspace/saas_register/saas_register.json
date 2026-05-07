@@ -73,6 +73,28 @@
    "type": "Link"
   },
   {
+   "dependencies": "",
+   "hidden": 0,
+   "is_query_report": 1,
+   "label": "SaaS Spend Forecast",
+   "link_count": 0,
+   "link_to": "SaaS Spend Forecast",
+   "link_type": "Report",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "dependencies": "",
+   "hidden": 0,
+   "is_query_report": 1,
+   "label": "SaaS Access Matrix",
+   "link_count": 0,
+   "link_to": "SaaS Access Matrix",
+   "link_type": "Report",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
    "hidden": 0,
    "is_query_report": 0,
    "label": "Configuration",

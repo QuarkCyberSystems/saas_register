@@ -1,7 +1,7 @@
 import frappe
 from frappe import _
 from frappe.model.document import Document
-from frappe.utils import nowdate
+from frappe.utils import flt, nowdate
 
 from saas_register.saas_register.doctype.saas_application.saas_application import (
 	recompute_seats_for,
@@ -14,6 +14,7 @@ REVOKED_STATES = {"Pending Revoke", "In Progress", "Revoked"}
 class SaaSAccess(Document):
 	def validate(self):
 		self.enforce_unique_active_access()
+		self.validate_tier_against_app()
 		self.fill_revoke_metadata()
 
 	def enforce_unique_active_access(self):
@@ -31,6 +32,43 @@ class SaaSAccess(Document):
 				),
 				title=_("Duplicate Access"),
 			)
+
+	def validate_tier_against_app(self):
+		"""If a tier_name is set, ensure it matches a tier on the parent app
+		AND auto-derive `monthly_cost_share` from that tier's per-seat cost
+		when the user hasn't filled it in."""
+		if not self.tier_name:
+			return
+
+		tier = frappe.db.get_value(
+			"SaaS Application Tier",
+			{
+				"parent": self.saas_application,
+				"parenttype": "SaaS Application",
+				"tier_name": self.tier_name,
+			},
+			["seats_paid", "monthly_cost", "currency"],
+			as_dict=True,
+		)
+
+		if not tier:
+			# Soft-fail: don't block save, but warn.
+			frappe.msgprint(
+				_("Tier {0} is not defined on {1}. Add it on the application or pick an existing tier.").format(
+					frappe.bold(self.tier_name),
+					frappe.bold(self.app_name or self.saas_application),
+				),
+				indicator="orange",
+				alert=True,
+			)
+			return
+
+		# Auto-derive per-seat cost share if user left it blank or zero
+		if not flt(self.monthly_cost_share) and flt(tier.seats_paid):
+			self.monthly_cost_share = flt(tier.monthly_cost) / flt(tier.seats_paid)
+
+		if not self.currency and tier.currency:
+			self.currency = tier.currency
 
 	def fill_revoke_metadata(self):
 		if self.revoke_status == "Revoked":

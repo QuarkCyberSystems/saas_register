@@ -15,6 +15,7 @@
   "column_break_top",
   "saas_application",
   "app_name",
+  "tier_name",
   "role_on_app",
   "access_section",
   "granted_date",
@@ -84,6 +85,14 @@
    "label": "Application Name",
    "fetch_from": "saas_application.app_name",
    "read_only": 1
+  },
+  {
+   "fieldname": "tier_name",
+   "fieldtype": "Autocomplete",
+   "label": "Tier",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "description": "Which priced tier of the application this employee is on (Free / Pro / Team / etc.). Options come from the application's tier table."
   },
   {
    "fieldname": "role_on_app",

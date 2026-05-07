@@ -13,10 +13,11 @@
   "app_name",
   "vendor",
   "category",
-  "plan",
   "column_break_details",
   "login_url",
   "seats_section",
+  "tiers",
+  "plan_summary",
   "seats_paid",
   "column_break_seats",
   "seats_active",
@@ -76,10 +77,19 @@
    "in_standard_filter": 1
   },
   {
-   "fieldname": "plan",
+   "fieldname": "tiers",
+   "fieldtype": "Table",
+   "label": "Tiers",
+   "options": "SaaS Application Tier",
+   "description": "Add one row per priced tier (Free / Pro / Team / Enterprise). Total seats and monthly cost roll up to the parent fields below."
+  },
+  {
+   "fieldname": "plan_summary",
    "fieldtype": "Data",
-   "label": "Plan / Tier",
-   "in_list_view": 1
+   "label": "Plan",
+   "read_only": 1,
+   "in_list_view": 1,
+   "description": "Auto-built from the tier rows, e.g. \"Pro 12 / Team 5\""
   },
   {
    "fieldname": "column_break_details",
@@ -157,8 +167,10 @@
   {
    "fieldname": "seats_paid",
    "fieldtype": "Int",
-   "label": "Seats Paid",
-   "in_list_view": 1
+   "label": "Seats Paid (total)",
+   "read_only": 1,
+   "in_list_view": 1,
+   "description": "Sum of `seats_paid` across tier rows"
   },
   {
    "fieldname": "column_break_seats",
@@ -187,9 +199,11 @@
   {
    "fieldname": "monthly_cost",
    "fieldtype": "Currency",
-   "label": "Monthly Cost",
+   "label": "Monthly Cost (total)",
    "options": "currency",
-   "in_list_view": 1
+   "read_only": 1,
+   "in_list_view": 1,
+   "description": "Sum of `monthly_cost` across tier rows"
   },
   {
    "fieldname": "annual_cost",

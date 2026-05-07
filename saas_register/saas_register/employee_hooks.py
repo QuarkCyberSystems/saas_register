@@ -1,9 +1,15 @@
 """Employee lifecycle hooks for the SaaS Register app.
 
-When an Employee's status transitions to a terminal state (e.g. ``Left``), an
-offboarding Project is created with one Task per (active SaaS Access × app's
-offboarding step). All active access rows for the employee are flipped to
-``Pending Revoke`` so they show up on Felix's queue.
+When an Employee's status transitions to a terminal state (e.g. ``Left``), one
+ToDo is created **per (active SaaS Access × app's offboarding step)** for the
+User resolved from the step's ``assigned_role_key``. All active access rows for
+the employee are flipped to ``Pending Revoke`` so they show up on the IT/HR
+queue.
+
+Why ToDos instead of Project + Task: SaaS offboarding is a stream of small
+single-owner actions, not a project. ToDos land in each owner's inbox and bell
+notification with no project-management overhead, which is what the HR team
+asked for.
 """
 
 from __future__ import annotations
@@ -24,7 +30,7 @@ TERMINAL_STATUSES = {"Left", "Resigned", "Terminated"}
 
 
 def on_employee_update(doc, method=None):
-	"""doc_events handler bound to Employee `on_update` in hooks.py."""
+	"""doc_events handler bound to Employee `on_update` and `after_insert`."""
 	if not _is_terminal(doc.status):
 		return
 
@@ -33,7 +39,7 @@ def on_employee_update(doc, method=None):
 
 	# Never let offboarding logic block the Employee save itself.
 	try:
-		_create_offboarding_workflow(doc)
+		_create_offboarding_todos(doc)
 	except Exception:
 		frappe.log_error(
 			title="SaaS Register: offboarding trigger failed",
@@ -58,7 +64,7 @@ def _just_transitioned(doc) -> bool:
 	return (old.get("status") or "") != (doc.get("status") or "")
 
 
-def _create_offboarding_workflow(employee) -> None:
+def _create_offboarding_todos(employee) -> None:
 	access_rows = frappe.get_all(
 		"SaaS Access",
 		filters={"employee": employee.name, "revoke_status": "Active"},
@@ -71,19 +77,10 @@ def _create_offboarding_workflow(employee) -> None:
 	settings = frappe.get_cached_doc("SaaS Register Settings")
 	sla_days = int(settings.default_offboarding_sla_days or 1)
 	due = add_days(today(), sla_days)
+	hr_fallback = settings.hr_user
 
-	project = frappe.new_doc("Project")
-	project.project_name = _("Offboarding — {0} — {1}").format(employee.employee_name or employee.name, today())
-	project.expected_start_date = today()
-	project.expected_end_date = due
-	if settings.default_cost_center:
-		project.cost_center = settings.default_cost_center
-	if settings.felix_user:
-		project.owner = settings.felix_user
-	project.insert(ignore_permissions=True)
-
-	tasks_created = 0
-	password_rotation_tasks = 0
+	todos_created = 0
+	rotations = 0
 
 	for row in access_rows:
 		# Flip status so it shows up in queues immediately.
@@ -102,7 +99,7 @@ def _create_offboarding_workflow(employee) -> None:
 		)
 
 		if not steps:
-			# Always create at least one fallback task per app so nothing slips through.
+			# Always create at least one fallback ToDo per app so nothing slips through.
 			steps = [
 				{
 					"step_description": "Revoke account in admin panel",
@@ -114,51 +111,74 @@ def _create_offboarding_workflow(employee) -> None:
 			]
 
 		for step in steps:
-			task = frappe.new_doc("Task")
-			task.subject = f"{row.app_name or row.saas_application} — {step['step_description']}"
-			task.project = project.name
-			task.exp_start_date = today()
-			task.exp_end_date = due
-			task.priority = "High"
-			if step.get("estimated_minutes"):
-				task.expected_time = float(step["estimated_minutes"]) / 60.0
+			assignee = resolve_role_user(step["assigned_role_key"], employee.name) or hr_fallback
+			if not assignee:
+				continue
 
-			assignee = resolve_role_user(step["assigned_role_key"], employee.name)
-			task.insert(ignore_permissions=True)
-
-			if assignee:
-				from frappe.desk.form.assign_to import add as assign
-
-				assign(
-					{
-						"assign_to": [assignee],
-						"doctype": "Task",
-						"name": task.name,
-						"description": task.subject,
-						"date": due,
-					}
-				)
-
+			description = (
+				f"<b>{row.app_name or row.saas_application}</b> — {step['step_description']}<br>"
+				f"<i>Offboarding for {employee.employee_name or employee.name}</i>"
+			)
 			if step.get("requires_password_rotation"):
-				_add_tag(task.doctype, task.name, "password-rotation")
-				password_rotation_tasks += 1
+				description += " <span style='color:#E53935'><b>· password rotation required</b></span>"
 
-			tasks_created += 1
+			created = _create_or_update_todo(
+				assignee=assignee,
+				ref_type="SaaS Access",
+				ref_name=row.name,
+				description=description,
+				due=due,
+				priority="High" if step.get("requires_password_rotation") else "Medium",
+			)
+			if created:
+				todos_created += 1
+				if step.get("requires_password_rotation"):
+					rotations += 1
 
-	_notify_owner(employee, project, len(access_rows), tasks_created, password_rotation_tasks)
+	_notify_owner(employee, len(access_rows), todos_created, rotations)
 
 
-def _add_tag(doctype: str, docname: str, tag: str) -> None:
+def _create_or_update_todo(
+	assignee: str,
+	ref_type: str,
+	ref_name: str,
+	description: str,
+	due: str,
+	priority: str = "Medium",
+) -> bool:
+	"""Create a fresh ToDo per offboarding step.
+
+	We deliberately bypass `frappe.desk.form.assign_to.add` here — that helper
+	dedupes on (user, ref) so multiple steps for the same assignee on the same
+	SaaS Access row collapse into a single ToDo. For offboarding we want one
+	ToDo per step so each action is independently checkable in the assignee's
+	inbox.
+	"""
 	try:
-		from frappe.desk.doctype.tag.tag import DocTags
-
-		DocTags(doctype).add(docname, tag)
+		todo = frappe.get_doc(
+			{
+				"doctype": "ToDo",
+				"allocated_to": assignee,
+				"assigned_by": frappe.session.user,
+				"description": description,
+				"reference_type": ref_type,
+				"reference_name": ref_name,
+				"date": due,
+				"priority": priority,
+				"status": "Open",
+			}
+		)
+		todo.insert(ignore_permissions=True)
+		return True
 	except Exception:
-		# Tagging is best-effort
-		pass
+		frappe.log_error(
+			title=f"saas_register: ToDo create failed for {ref_type} {ref_name} → {assignee}",
+			message=frappe.get_traceback(),
+		)
+		return False
 
 
-def _notify_owner(employee, project, app_count: int, task_count: int, rotations: int) -> None:
+def _notify_owner(employee, app_count: int, todo_count: int, rotations: int) -> None:
 	settings = frappe.get_cached_doc("SaaS Register Settings")
 	recipient = settings.notify_email or settings.felix_user
 	if not recipient:
@@ -166,21 +186,20 @@ def _notify_owner(employee, project, app_count: int, task_count: int, rotations:
 
 	frappe.sendmail(
 		recipients=[recipient],
-		subject=_("Offboarding workflow created for {0}").format(employee.employee_name or employee.name),
+		subject=_("Offboarding ToDos created for {0}").format(employee.employee_name or employee.name),
 		message=_(
-			"<p>An offboarding workflow has been created.</p>"
+			"<p>Offboarding ToDos have been created.</p>"
 			"<ul>"
 			"<li>Employee: <b>{employee}</b> ({status})</li>"
-			"<li>Project: <a href='/app/project/{project}'>{project}</a></li>"
-			"<li>Apps: {apps}</li>"
-			"<li>Tasks: {tasks} ({rotations} require password rotation)</li>"
+			"<li>Apps with active access: {apps}</li>"
+			"<li>ToDos created: {todos} ({rotations} require password rotation)</li>"
 			"</ul>"
+			"<p>Open <a href='/app/todo'>/app/todo</a> to see the queue.</p>"
 		).format(
 			employee=frappe.utils.escape_html(employee.employee_name or employee.name),
 			status=frappe.utils.escape_html(employee.status or ""),
-			project=project.name,
 			apps=app_count,
-			tasks=task_count,
+			todos=todo_count,
 			rotations=rotations,
 		),
 		now=False,

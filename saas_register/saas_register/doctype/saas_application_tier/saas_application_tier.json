@@ -1,0 +1,72 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2026-05-06 00:00:00",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "tier_name",
+  "seats_paid",
+  "monthly_cost",
+  "currency",
+  "notes"
+ ],
+ "fields": [
+  {
+   "fieldname": "tier_name",
+   "fieldtype": "Data",
+   "label": "Tier",
+   "reqd": 1,
+   "in_list_view": 1,
+   "columns": 3,
+   "description": "e.g. Free / Pro / Team / Enterprise"
+  },
+  {
+   "fieldname": "seats_paid",
+   "fieldtype": "Int",
+   "label": "Seats Paid",
+   "reqd": 1,
+   "in_list_view": 1,
+   "columns": 2,
+   "default": 0
+  },
+  {
+   "fieldname": "monthly_cost",
+   "fieldtype": "Currency",
+   "label": "Monthly Cost",
+   "options": "currency",
+   "in_list_view": 1,
+   "columns": 2,
+   "default": 0
+  },
+  {
+   "fieldname": "currency",
+   "fieldtype": "Link",
+   "label": "Currency",
+   "options": "Currency",
+   "fetch_from": "parent.currency",
+   "default": "AED",
+   "columns": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "notes",
+   "fieldtype": "Small Text",
+   "label": "Notes",
+   "columns": 3
+  }
+ ],
+ "istable": 1,
+ "links": [],
+ "modified": "2026-05-06 00:00:00",
+ "modified_by": "Administrator",
+ "module": "Saas Register",
+ "name": "SaaS Application Tier",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "idx",
+ "sort_order": "ASC",
+ "states": [],
+ "track_changes": 1
+}
