@@ -171,9 +171,22 @@ Standard filter on Purchase Invoice list lets you slice all SaaS spend by app.
 
 ### Multi-tier pricing
 
-Many SaaS products have multiple paid tiers running in parallel (e.g. Anthropic Claude with **Pro / Team / Enterprise**). The `SaaS Application` form has a **Tiers** child table where each row captures `tier_name`, `seats_paid`, and `monthly_cost`. The parent's `seats_paid` and `monthly_cost` are **read-only rollups** auto-computed in `validate()`. A derived `plan_summary` (e.g. `"Pro 18 / Team 8 / Enterprise 4"`) feeds the list view's Plan column.
+Many SaaS products have multiple paid tiers running in parallel (e.g. Anthropic Claude with **Pro / Team / Enterprise**). Tiers are modeled as a **first-class linked doctype** (`SaaS Application Tier`), not a child table — so each tier has a stable identity, its own audit trail, and can be linked from anywhere (e.g. SaaS Access).
 
-On `SaaS Access`, the **Tier** field is an Autocomplete populated by the form `.js` calling `get_tiers(saas_application)`. When you pick a tier, `monthly_cost_share` auto-fills with that tier's per-seat cost (`tier.monthly_cost / tier.seats_paid`). You can still override the share manually for special-case pricing.
+How it's wired:
+
+- `SaaS Application Tier` fields: `tier_name`, `seats_paid`, `monthly_cost`, `currency`, `notes`. It has a required `saas_application` Link → SaaS Application.
+- Naming: `format:{saas_application}-{tier_name}` so a tier's name is e.g. `SAAS-0024-Pro`. Title in dropdowns shows just `Pro`.
+- On the `SaaS Application` form: tiers appear under **Connections → Pricing → SaaS Application Tier**. The form has an **Add Tier** custom button under "Actions" that pre-fills the parent link.
+- The parent's `seats_paid`, `monthly_cost`, `annual_cost`, and `plan_summary` are **read-only rollups** kept fresh by hooks on the Tier controller:
+  - `after_insert` and `on_update` → call `recompute_parent` immediately
+  - `after_delete` (not `on_trash` — see note below) → recompute after the row is gone
+
+> **Why `after_delete` and not `on_trash`?** Frappe fires `on_trash` *before* the DB row is removed; querying the tiers from there still sees the about-to-be-deleted row, producing stale totals. `after_delete` runs after the delete has committed.
+
+On `SaaS Access`, the **Tier** field is a **Link → SaaS Application Tier** with a `set_query` filter on the form (`{saas_application: frm.doc.saas_application}`) so the dropdown only shows tiers belonging to the chosen app. Server-side, `validate()` hard-`throw`s on cross-app tier mismatch — so even CSV imports and API calls can't bypass it.
+
+When you pick a tier, `monthly_cost_share` auto-fills with that tier's per-seat cost (`tier.monthly_cost / tier.seats_paid`). You can still override the share manually for special-case pricing. A read-only `tier_name` field on SaaS Access is `fetch_from: tier.tier_name` so list views and reports show the human label without a join.
 
 ### SaaS Spend Report
 

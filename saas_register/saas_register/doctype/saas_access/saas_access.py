@@ -34,36 +34,38 @@ class SaaSAccess(Document):
 			)
 
 	def validate_tier_against_app(self):
-		"""If a tier_name is set, ensure it matches a tier on the parent app
-		AND auto-derive `monthly_cost_share` from that tier's per-seat cost
-		when the user hasn't filled it in."""
-		if not self.tier_name:
+		"""If a tier is set, hard-validate it belongs to the chosen application
+		and auto-derive `monthly_cost_share` from that tier's per-seat cost when
+		the user hasn't filled it in. The Link field guarantees the tier doc
+		exists; we still must check it points at the same app."""
+		if not self.tier:
 			return
 
 		tier = frappe.db.get_value(
 			"SaaS Application Tier",
-			{
-				"parent": self.saas_application,
-				"parenttype": "SaaS Application",
-				"tier_name": self.tier_name,
-			},
-			["seats_paid", "monthly_cost", "currency"],
+			self.tier,
+			["saas_application", "tier_name", "seats_paid", "monthly_cost", "currency"],
 			as_dict=True,
 		)
 
 		if not tier:
-			# Soft-fail: don't block save, but warn.
-			frappe.msgprint(
-				_("Tier {0} is not defined on {1}. Add it on the application or pick an existing tier.").format(
-					frappe.bold(self.tier_name),
-					frappe.bold(self.app_name or self.saas_application),
-				),
-				indicator="orange",
-				alert=True,
+			# Link target was deleted between client load and save.
+			frappe.throw(
+				_("Tier {0} no longer exists.").format(frappe.bold(self.tier)),
+				title=_("Tier Not Found"),
 			)
-			return
 
-		# Auto-derive per-seat cost share if user left it blank or zero
+		if tier.saas_application != self.saas_application:
+			frappe.throw(
+				_("Tier {0} belongs to {1}, not {2}.").format(
+					frappe.bold(tier.tier_name),
+					frappe.bold(tier.saas_application),
+					frappe.bold(self.saas_application),
+				),
+				title=_("Tier / Application Mismatch"),
+			)
+
+		# Auto-derive per-seat cost share if user left it blank or zero.
 		if not flt(self.monthly_cost_share) and flt(tier.seats_paid):
 			self.monthly_cost_share = flt(tier.monthly_cost) / flt(tier.seats_paid)
 

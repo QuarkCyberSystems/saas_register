@@ -35,6 +35,11 @@ def _load_sample_applications():
 		if frappe.db.exists("SaaS Application", {"app_name": app_name}):
 			continue
 
+		# Tiers are linked docs now (not a child table on the parent), so we
+		# pop them out of the parent record and create them separately after
+		# the parent is saved.
+		tiers = record.pop("tiers", []) or []
+
 		try:
 			doc = frappe.get_doc(record)
 			doc.flags.ignore_permissions = True
@@ -44,3 +49,20 @@ def _load_sample_applications():
 				title=f"saas_register: failed to seed sample app {app_name}",
 				message=frappe.get_traceback(),
 			)
+			continue
+
+		for tier in tiers:
+			try:
+				tier_doc = frappe.get_doc(
+					{
+						"doctype": "SaaS Application Tier",
+						"saas_application": doc.name,
+						**tier,
+					}
+				)
+				tier_doc.insert(ignore_permissions=True)
+			except Exception:
+				frappe.log_error(
+					title=f"saas_register: failed to seed tier on {app_name}",
+					message=frappe.get_traceback(),
+				)

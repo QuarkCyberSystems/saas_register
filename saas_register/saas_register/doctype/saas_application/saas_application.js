@@ -1,23 +1,14 @@
-function rollupTiers(frm) {
-	const tiers = frm.doc.tiers || [];
-	let seats = 0;
-	let cost = 0;
-	const labels = [];
-	for (const t of tiers) {
-		seats += parseInt(t.seats_paid || 0);
-		cost += parseFloat(t.monthly_cost || 0);
-		const lbl = (t.tier_name || "").trim() || __("Tier");
-		labels.push(t.seats_paid ? `${lbl} ${t.seats_paid}` : lbl);
-	}
-	frm.set_value("seats_paid", seats);
-	frm.set_value("monthly_cost", cost);
-	frm.set_value("annual_cost", cost * 12);
-	frm.set_value("plan_summary", labels.join(" / "));
-}
-
 frappe.ui.form.on("SaaS Application", {
 	refresh(frm) {
 		if (!frm.is_new()) {
+			frm.add_custom_button(
+				__("Add Tier"),
+				() => {
+					frappe.new_doc("SaaS Application Tier", { saas_application: frm.doc.name });
+				},
+				__("Actions")
+			);
+
 			frm.add_custom_button(
 				__("View Access Records"),
 				() => frappe.set_route("List", "SaaS Access", { saas_application: frm.doc.name }),
@@ -53,13 +44,4 @@ frappe.ui.form.on("SaaS Application", {
 			);
 		}
 	},
-
-	tiers_add: rollupTiers,
-	tiers_remove: rollupTiers,
-});
-
-frappe.ui.form.on("SaaS Application Tier", {
-	tier_name: rollupTiers,
-	seats_paid: rollupTiers,
-	monthly_cost: rollupTiers,
 });

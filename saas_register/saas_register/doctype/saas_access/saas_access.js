@@ -1,26 +1,12 @@
-async function loadTierOptions(frm) {
-	if (!frm.doc.saas_application) {
-		frm.set_df_property("tier_name", "options", []);
-		return;
-	}
-	const r = await frappe.call({
-		method: "saas_register.saas_register.doctype.saas_application.saas_application.get_tiers",
-		args: { saas_application: frm.doc.saas_application },
-	});
-	const tiers = r.message || [];
-	frm.tier_options_map = Object.fromEntries(tiers.map((t) => [t.tier_name, t]));
-	const labels = tiers.map((t) =>
-		t.seats_paid
-			? `${t.tier_name}  ·  ${t.seats_paid} seats  ·  ${format_currency(t.monthly_cost, t.currency)}/mo`
-			: t.tier_name
-	);
-	frm.set_df_property("tier_name", "options", labels.length ? labels.join("\n") : []);
-}
-
 frappe.ui.form.on("SaaS Access", {
-	refresh(frm) {
-		loadTierOptions(frm);
+	setup(frm) {
+		// Constrain the Tier dropdown to tiers belonging to the selected app.
+		frm.set_query("tier", () => ({
+			filters: { saas_application: frm.doc.saas_application || "" },
+		}));
+	},
 
+	refresh(frm) {
 		if (frm.is_new()) return;
 
 		if (frm.doc.revoke_status !== "Revoked") {
@@ -67,24 +53,32 @@ frappe.ui.form.on("SaaS Access", {
 	},
 
 	saas_application(frm) {
-		frm.set_value("tier_name", null);
+		// When the app changes, the previously-picked tier is almost certainly
+		// wrong — clear it.
+		frm.set_value("tier", null);
 		frm.set_value("monthly_cost_share", 0);
-		loadTierOptions(frm);
 	},
 
-	tier_name(frm) {
-		if (!frm.doc.tier_name || !frm.tier_options_map) return;
-		// Strip the "  ·  N seats..." suffix back to the bare tier name on save:
-		const bare = frm.doc.tier_name.split("  ·")[0].trim();
-		if (bare !== frm.doc.tier_name) {
-			frm.set_value("tier_name", bare);
+	tier(frm) {
+		// On tier pick, fetch its per-seat cost and prefill monthly_cost_share.
+		if (!frm.doc.tier) {
+			frm.set_value("monthly_cost_share", 0);
 			return;
 		}
-		const tier = frm.tier_options_map[bare];
-		if (tier && tier.seats_paid) {
-			const perSeat = tier.monthly_cost / tier.seats_paid;
-			frm.set_value("monthly_cost_share", perSeat);
-			if (!frm.doc.currency && tier.currency) frm.set_value("currency", tier.currency);
-		}
+		frappe.db
+			.get_value("SaaS Application Tier", frm.doc.tier, [
+				"seats_paid",
+				"monthly_cost",
+				"currency",
+			])
+			.then((r) => {
+				const t = (r && r.message) || {};
+				if (t.seats_paid && t.monthly_cost) {
+					frm.set_value("monthly_cost_share", t.monthly_cost / t.seats_paid);
+				}
+				if (!frm.doc.currency && t.currency) {
+					frm.set_value("currency", t.currency);
+				}
+			});
 	},
 });

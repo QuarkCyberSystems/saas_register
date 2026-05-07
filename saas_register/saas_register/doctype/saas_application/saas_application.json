@@ -21,8 +21,6 @@
   "description_section",
   "description",
   "pricing_tab",
-  "tiers_section",
-  "tiers",
   "totals_section",
   "plan_summary",
   "seats_paid",
@@ -132,23 +130,10 @@
    "label": "Pricing & Seats"
   },
   {
-   "fieldname": "tiers_section",
-   "fieldtype": "Section Break",
-   "label": "Pricing Tiers"
-  },
-  {
-   "fieldname": "tiers",
-   "fieldtype": "Table",
-   "label": "Tiers",
-   "options": "SaaS Application Tier",
-   "description": "Add one row per priced tier (Free / Pro / Team / Enterprise). Total seats and monthly cost roll up to the totals section below."
-  },
-  {
    "fieldname": "totals_section",
    "fieldtype": "Section Break",
-   "label": "Totals (auto-calculated)",
-   "collapsible": 1,
-   "collapsible_depends_on": "eval:!doc.tiers || doc.tiers.length === 0"
+   "label": "Totals (auto-calculated from tiers)",
+   "description": "Tiers are managed via the connection card on the right. Add or edit tiers there — these totals will refresh automatically."
   },
   {
    "fieldname": "plan_summary",
@@ -316,6 +301,11 @@
   }
  ],
  "links": [
+  {
+   "group": "Pricing",
+   "link_doctype": "SaaS Application Tier",
+   "link_fieldname": "saas_application"
+  },
   {
    "group": "Access",
    "link_doctype": "SaaS Access",

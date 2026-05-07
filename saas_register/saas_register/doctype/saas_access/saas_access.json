@@ -15,6 +15,7 @@
   "column_break_top",
   "saas_application",
   "app_name",
+  "tier",
   "tier_name",
   "role_on_app",
   "access_section",
@@ -87,12 +88,20 @@
    "read_only": 1
   },
   {
-   "fieldname": "tier_name",
-   "fieldtype": "Autocomplete",
+   "fieldname": "tier",
+   "fieldtype": "Link",
    "label": "Tier",
-   "in_list_view": 1,
+   "options": "SaaS Application Tier",
    "in_standard_filter": 1,
-   "description": "Which priced tier of the application this employee is on (Free / Pro / Team / etc.). Options come from the application's tier table."
+   "description": "Which priced tier of the application this employee is on. Filtered to tiers of the selected SaaS Application."
+  },
+  {
+   "fieldname": "tier_name",
+   "fieldtype": "Data",
+   "label": "Tier Name",
+   "fetch_from": "tier.tier_name",
+   "read_only": 1,
+   "in_list_view": 1
   },
   {
    "fieldname": "role_on_app",
