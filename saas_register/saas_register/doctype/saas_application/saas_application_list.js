@@ -34,13 +34,14 @@ frappe.listview_settings["SaaS Application"] = {
 			if (!value) return "";
 			const days = frappe.datetime.get_day_diff(value, frappe.datetime.get_today());
 			const formatted = frappe.datetime.global_date_format(value);
+			// Wrap in an outer <span> so jQuery parses the result as HTML, not a CSS selector.
 			if (days < 0) {
-				return `${formatted} <span style="color:var(--red-500);font-weight:600">(overdue)</span>`;
+				return `<span>${formatted} <span style="color:var(--red-500);font-weight:600">(overdue)</span></span>`;
 			}
 			if (days <= 60) {
-				return `${formatted} <span style="color:var(--orange-600);font-weight:600">(${days}d)</span>`;
+				return `<span>${formatted} <span style="color:var(--orange-600);font-weight:600">(${days}d)</span></span>`;
 			}
-			return formatted;
+			return `<span>${formatted}</span>`;
 		},
 	},
 
