@@ -56,6 +56,7 @@ has_permission = {
 fixtures = [
 	{"dt": "Role", "filters": [["role_name", "in", ["IT Manager"]]]},
 	"SaaS Category",
+	{"dt": "Custom Field", "filters": [["name", "in", ["Purchase Invoice-saas_application"]]]},
 ]
 
 

@@ -38,8 +38,6 @@
   "auto_renew",
   "accounting_section",
   "cost_center",
-  "column_break_accounting",
-  "linked_invoice",
   "identity_tab",
   "sso_section",
   "sso_status",
@@ -241,17 +239,8 @@
    "fieldtype": "Link",
    "label": "Cost Center",
    "options": "Cost Center",
-   "in_standard_filter": 1
-  },
-  {
-   "fieldname": "column_break_accounting",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "linked_invoice",
-   "fieldtype": "Link",
-   "label": "Linked Invoice",
-   "options": "Purchase Invoice"
+   "in_standard_filter": 1,
+   "description": "Default cost center for invoices booked against this app. Individual Purchase Invoices can override."
   },
   {
    "fieldname": "identity_tab",
@@ -330,6 +319,11 @@
   {
    "group": "Access",
    "link_doctype": "SaaS Access",
+   "link_fieldname": "saas_application"
+  },
+  {
+   "group": "Billing",
+   "link_doctype": "Purchase Invoice",
    "link_fieldname": "saas_application"
   }
  ],

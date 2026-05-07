@@ -157,6 +157,18 @@ Per the spec matrix (in [reference/saas_register_build_spec.md](../../reference/
 
 The "own department" / "own employee" filtering for `SaaS Access` is implemented in [saas_register/saas_register/permissions.py](saas_register/saas_register/permissions.py), wired via `permission_query_conditions` and `has_permission` hooks in `hooks.py`.
 
+### Linking Purchase Invoices
+
+A SaaS app accumulates many invoices over its life (monthly bills, annual renewals, mid-cycle adjustments). Rather than a single `linked_invoice` field on the application, the app installs a **Custom Field** `saas_application` on **Purchase Invoice** (Link → SaaS Application) — shipped via fixtures so it auto-syncs on install/migrate.
+
+How to use it:
+
+1. Create or open a Purchase Invoice in ERPNext.
+2. In the supplier section there's now a **SaaS Application** field — set it to the app this invoice pays for.
+3. On the SaaS Application form, the **Connections** card "Purchase Invoice" automatically lists every invoice tagged to that app. The total dollar amount per app over a period is also queryable from the same field.
+
+Standard filter on Purchase Invoice list lets you slice all SaaS spend by app.
+
 ### Multi-tier pricing
 
 Many SaaS products have multiple paid tiers running in parallel (e.g. Anthropic Claude with **Pro / Team / Enterprise**). The `SaaS Application` form has a **Tiers** child table where each row captures `tier_name`, `seats_paid`, and `monthly_cost`. The parent's `seats_paid` and `monthly_cost` are **read-only rollups** auto-computed in `validate()`. A derived `plan_summary` (e.g. `"Pro 18 / Team 8 / Enterprise 4"`) feeds the list view's Plan column.
