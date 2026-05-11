@@ -1,0 +1,24 @@
+{
+ "content": null,
+ "creation": "2026-05-07 00:00:00",
+ "docstatus": 0,
+ "doctype": "Page",
+ "idx": 0,
+ "modified": "2026-05-07 00:00:00",
+ "modified_by": "Administrator",
+ "module": "Saas Register",
+ "name": "monthly-cost-entry",
+ "owner": "Administrator",
+ "page_name": "monthly-cost-entry",
+ "restrict_to_domain": "",
+ "roles": [
+  {"role": "System Manager"},
+  {"role": "IT Manager"},
+  {"role": "Finance Manager"}
+ ],
+ "script": null,
+ "standard": "Yes",
+ "style": null,
+ "system_page": 0,
+ "title": "Monthly Cost Entry"
+}

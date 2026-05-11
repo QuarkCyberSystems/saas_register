@@ -22,6 +22,7 @@
   {"hidden": 0, "is_query_report": 1, "label": "SaaS Spend Forecast", "link_to": "SaaS Spend Forecast", "link_type": "Report", "onboard": 0, "type": "Link"},
   {"hidden": 0, "is_query_report": 1, "label": "SaaS Access Matrix", "link_to": "SaaS Access Matrix", "link_type": "Report", "onboard": 0, "type": "Link"},
   {"hidden": 0, "is_query_report": 0, "label": "Settings", "onboard": 0, "type": "Card Break"},
+  {"hidden": 0, "is_query_report": 0, "label": "Monthly Cost Entry", "link_to": "monthly-cost-entry", "link_type": "Page", "onboard": 0, "type": "Link"},
   {"hidden": 0, "is_query_report": 0, "label": "SaaS Register Settings", "link_to": "SaaS Register Settings", "link_type": "DocType", "onboard": 0, "type": "Link"}
  ],
  "modified": "2026-05-07 00:00:00",
