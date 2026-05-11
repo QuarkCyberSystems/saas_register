@@ -3,43 +3,52 @@
   "doctype": "SaaS Application",
   "app_name": "Google Workspace",
   "category": "Productivity",
+  "subscription_model": "Shared",
+  "plan": "Business Plus",
   "login_url": "https://admin.google.com",
   "status": "Active",
-  "sso_status": "Yes - Google Workspace",
-  "vault_status": "No",
+  "access_notes": "SSO via Google Workspace itself (IdP). MFA enforced for all users.",
   "currency": "AED",
   "billing_cycle": "Annual",
   "renewal_date": "2026-12-15",
   "auto_renew": 1,
+  "seats_paid": 85,
+  "monthly_cost": 5520,
   "description": "Primary identity / SSO provider. Mail, Drive, Calendar.",
-  "tiers": [
-   {"tier_name": "Business Plus", "seats_paid": 85, "monthly_cost": 5520, "currency": "AED"}
+  "monthly_costs": [
+   {"month": "2026-03-01", "amount": 5520, "source": "Imported"},
+   {"month": "2026-04-01", "amount": 5520, "source": "Imported"},
+   {"month": "2026-05-01", "amount": 5520, "source": "Manual"}
   ],
   "offboarding_steps": [
-   {"sequence": 1, "step_description": "Suspend Google Workspace account", "assigned_role_key": "felix", "estimated_minutes": 5, "requires_password_rotation": 0},
-   {"sequence": 2, "step_description": "Revoke all OAuth tokens issued to user", "assigned_role_key": "felix", "estimated_minutes": 5, "requires_password_rotation": 0},
-   {"sequence": 3, "step_description": "Transfer Drive ownership to manager", "assigned_role_key": "felix", "estimated_minutes": 10, "requires_password_rotation": 0}
+   {"sequence": 1, "step_description": "Suspend Google Workspace account", "assigned_role_key": "it_manager", "estimated_minutes": 5, "requires_password_rotation": 0},
+   {"sequence": 2, "step_description": "Revoke all OAuth tokens issued to user", "assigned_role_key": "it_manager", "estimated_minutes": 5, "requires_password_rotation": 0},
+   {"sequence": 3, "step_description": "Transfer Drive ownership to manager", "assigned_role_key": "it_manager", "estimated_minutes": 10, "requires_password_rotation": 0}
   ]
  },
  {
   "doctype": "SaaS Application",
   "app_name": "HubSpot Sales Hub",
   "category": "CRM-Sales",
+  "subscription_model": "Shared",
+  "plan": "Pro",
   "login_url": "https://app.hubspot.com",
   "status": "Active",
-  "sso_status": "Yes - Google Workspace",
-  "vault_status": "Yes",
-  "vault_location": "1Password – Sales",
+  "access_notes": "SSO via Google Workspace. 1Password vault: Sales. MFA enforced.",
   "currency": "AED",
   "billing_cycle": "Annual",
   "renewal_date": "2026-11-30",
   "auto_renew": 1,
+  "seats_paid": 12,
+  "monthly_cost": 4320,
   "description": "Sales CRM for the Owner Relations team.",
-  "tiers": [
-   {"tier_name": "Pro", "seats_paid": 12, "monthly_cost": 4320, "currency": "AED"}
+  "monthly_costs": [
+   {"month": "2026-03-01", "amount": 4320, "source": "Imported"},
+   {"month": "2026-04-01", "amount": 4320, "source": "Imported"},
+   {"month": "2026-05-01", "amount": 4320, "source": "Manual"}
   ],
   "offboarding_steps": [
-   {"sequence": 1, "step_description": "Deactivate HubSpot user", "assigned_role_key": "felix", "estimated_minutes": 5, "requires_password_rotation": 0},
+   {"sequence": 1, "step_description": "Deactivate HubSpot user", "assigned_role_key": "it_manager", "estimated_minutes": 5, "requires_password_rotation": 0},
    {"sequence": 2, "step_description": "Reassign owned deals/contacts to manager", "assigned_role_key": "dept_head", "estimated_minutes": 15, "requires_password_rotation": 0},
    {"sequence": 3, "step_description": "Rotate HubSpot API key in vault", "assigned_role_key": "tech_lead", "estimated_minutes": 10, "requires_password_rotation": 1}
   ]
@@ -47,19 +56,23 @@
  {
   "doctype": "SaaS Application",
   "app_name": "Atlassian Jira",
-  "category": "Development",
+  "category": "Developer Tools",
+  "subscription_model": "Shared",
+  "plan": "Standard",
   "login_url": "https://livio.atlassian.net",
   "status": "Review",
-  "sso_status": "Yes - Google Workspace",
-  "vault_status": "Yes",
-  "vault_location": "1Password – Tech/Infra",
+  "access_notes": "SSO via Google Workspace. 1Password vault: Tech/Infra.",
   "currency": "AED",
   "billing_cycle": "Annual",
   "renewal_date": "2026-07-05",
   "auto_renew": 0,
+  "seats_paid": 30,
+  "monthly_cost": 1890,
   "description": "Issue tracking. Underutilized — review for downgrade.",
-  "tiers": [
-   {"tier_name": "Standard", "seats_paid": 30, "monthly_cost": 1890, "currency": "AED"}
+  "monthly_costs": [
+   {"month": "2026-03-01", "amount": 1890, "source": "Imported"},
+   {"month": "2026-04-01", "amount": 1890, "source": "Imported"},
+   {"month": "2026-05-01", "amount": 1890, "source": "Manual"}
   ],
   "offboarding_steps": [
    {"sequence": 1, "step_description": "Remove user from Jira site", "assigned_role_key": "tech_lead", "estimated_minutes": 5, "requires_password_rotation": 0},
@@ -68,70 +81,72 @@
  },
  {
   "doctype": "SaaS Application",
-  "app_name": "Vercel",
-  "category": "Hosting-Infra",
-  "login_url": "https://vercel.com/dashboard",
+  "app_name": "AWS",
+  "category": "Hosting",
+  "subscription_model": "Usage-Based",
+  "plan": "",
+  "login_url": "https://console.aws.amazon.com",
   "status": "Active",
-  "sso_status": "Yes - Google Workspace",
-  "vault_status": "Yes",
-  "vault_location": "1Password – Tech/Infra",
+  "access_notes": "SSO via Google Workspace. Root credentials in 1Password vault: Tech/Infra.",
   "currency": "AED",
-  "billing_cycle": "Annual",
-  "renewal_date": "2026-08-01",
-  "auto_renew": 1,
-  "description": "Frontend hosting + preview deploys.",
-  "tiers": [
-   {"tier_name": "Pro", "seats_paid": 8, "monthly_cost": 730, "currency": "AED"}
+  "billing_cycle": "Usage-Based",
+  "auto_renew": 0,
+  "description": "Cloud hosting. Cost varies monthly with usage.",
+  "monthly_costs": [
+   {"month": "2026-03-01", "amount": 17820, "source": "Imported", "notes": "Stage env spike"},
+   {"month": "2026-04-01", "amount": 18450, "source": "Imported"},
+   {"month": "2026-05-01", "amount": 18500, "source": "Manual"}
   ],
   "offboarding_steps": [
-   {"sequence": 1, "step_description": "Remove user from Vercel team", "assigned_role_key": "tech_lead", "estimated_minutes": 3, "requires_password_rotation": 0},
-   {"sequence": 2, "step_description": "Transfer project ownership", "assigned_role_key": "tech_lead", "estimated_minutes": 10, "requires_password_rotation": 0},
-   {"sequence": 3, "step_description": "Rotate deploy hooks / env tokens", "assigned_role_key": "tech_lead", "estimated_minutes": 15, "requires_password_rotation": 1}
+   {"sequence": 1, "step_description": "Remove user from AWS IAM Identity Center", "assigned_role_key": "tech_lead", "estimated_minutes": 5, "requires_password_rotation": 0},
+   {"sequence": 2, "step_description": "Rotate any IAM keys the user generated", "assigned_role_key": "tech_lead", "estimated_minutes": 15, "requires_password_rotation": 1}
   ]
  },
  {
   "doctype": "SaaS Application",
-  "app_name": "1Password Business",
-  "category": "Productivity",
-  "login_url": "https://livio.1password.com",
+  "app_name": "ChatGPT Plus (individual)",
+  "category": "AI Tools",
+  "subscription_model": "Per-User",
+  "plan": "Plus",
+  "login_url": "https://chatgpt.com",
   "status": "Active",
-  "sso_status": "Yes - Google Workspace",
-  "vault_status": "Not Applicable",
+  "access_notes": "Individual subs. No SSO. Each seat is its own contract.",
   "currency": "AED",
-  "billing_cycle": "Annual",
-  "renewal_date": "2026-10-12",
+  "billing_cycle": "Monthly",
   "auto_renew": 1,
-  "description": "Company-wide password vault.",
-  "tiers": [
-   {"tier_name": "Business", "seats_paid": 50, "monthly_cost": 1100, "currency": "AED"}
+  "description": "Per-user ChatGPT Plus subscriptions. Each access record IS the contract.",
+  "monthly_costs": [
+   {"month": "2026-03-01", "amount": 320, "source": "Manual"},
+   {"month": "2026-04-01", "amount": 320, "source": "Manual"},
+   {"month": "2026-05-01", "amount": 320, "source": "Manual"}
   ],
   "offboarding_steps": [
-   {"sequence": 1, "step_description": "Suspend 1Password user (preserves audit trail)", "assigned_role_key": "felix", "estimated_minutes": 3, "requires_password_rotation": 0},
-   {"sequence": 2, "step_description": "Audit shared vaults the user accessed in last 90 days", "assigned_role_key": "felix", "estimated_minutes": 15, "requires_password_rotation": 0},
-   {"sequence": 3, "step_description": "Rotate any shared credentials the user could see", "assigned_role_key": "tech_lead", "estimated_minutes": 30, "requires_password_rotation": 1}
+   {"sequence": 1, "step_description": "Cancel the individual ChatGPT Plus seat", "assigned_role_key": "finance_manager", "estimated_minutes": 5, "requires_password_rotation": 0}
   ]
  },
  {
   "doctype": "SaaS Application",
   "app_name": "Anthropic Claude",
-  "category": "Productivity",
+  "category": "AI Tools",
+  "subscription_model": "Shared",
+  "plan": "",
   "login_url": "https://console.anthropic.com",
   "status": "Active",
-  "sso_status": "Yes - Google Workspace",
-  "vault_status": "Yes",
-  "vault_location": "1Password – Tech/Infra",
+  "access_notes": "SSO via Google Workspace. Mixed tiers — see SaaS Access records.",
   "currency": "AED",
   "billing_cycle": "Monthly",
   "renewal_date": "2026-06-01",
   "auto_renew": 1,
-  "description": "AI assistant. Multiple tiers across the team — Pro for individuals, Team for shared workspaces, Enterprise for leadership.",
-  "tiers": [
-   {"tier_name": "Pro", "seats_paid": 18, "monthly_cost": 1320, "currency": "AED", "notes": "Individual users — ~$20/mo each"},
-   {"tier_name": "Team", "seats_paid": 8, "monthly_cost": 880, "currency": "AED", "notes": "Shared team workspaces"},
-   {"tier_name": "Enterprise", "seats_paid": 4, "monthly_cost": 2200, "currency": "AED", "notes": "Leadership + dev"}
+  "seats_paid": 30,
+  "monthly_cost": 4400,
+  "description": "AI assistant. Mixed tiers (Pro / Team / Enterprise) — captured on individual SaaS Access records via tier_or_plan.",
+  "monthly_costs": [
+   {"month": "2026-03-01", "amount": 4200, "source": "Imported"},
+   {"month": "2026-04-01", "amount": 4300, "source": "Imported"},
+   {"month": "2026-05-01", "amount": 4400, "source": "Manual", "notes": "Added 2 Pro seats"}
   ],
   "offboarding_steps": [
-   {"sequence": 1, "step_description": "Remove user from Anthropic Console workspace", "assigned_role_key": "felix", "estimated_minutes": 3, "requires_password_rotation": 0},
+   {"sequence": 1, "step_description": "Remove user from Anthropic Console workspace", "assigned_role_key": "it_manager", "estimated_minutes": 3, "requires_password_rotation": 0},
    {"sequence": 2, "step_description": "Rotate API keys the user generated", "assigned_role_key": "tech_lead", "estimated_minutes": 10, "requires_password_rotation": 1}
   ]
  }

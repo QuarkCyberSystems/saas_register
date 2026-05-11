@@ -32,8 +32,8 @@
    "fieldname": "assigned_role_key",
    "fieldtype": "Select",
    "label": "Assigned Role",
-   "options": "felix\ntech_lead\ndept_head\nhr",
-   "default": "felix",
+   "options": "it_manager\ntech_lead\nfinance_manager\nhr_manager\ndept_head",
+   "default": "it_manager",
    "in_list_view": 1,
    "columns": 2,
    "description": "Resolved to a User via SaaS Register Settings"

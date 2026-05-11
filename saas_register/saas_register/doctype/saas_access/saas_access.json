@@ -15,8 +15,8 @@
   "column_break_top",
   "saas_application",
   "app_name",
-  "tier",
-  "tier_name",
+  "subscription_model",
+  "tier_or_plan",
   "role_on_app",
   "access_section",
   "granted_date",
@@ -24,6 +24,11 @@
   "monthly_cost_share",
   "column_break_access",
   "currency",
+  "subscription_status",
+  "per_user_section",
+  "per_user_renewal_date",
+  "column_break_per_user",
+  "per_user_billing_cycle",
   "revoke_section",
   "revoke_status",
   "revoked_date",
@@ -88,27 +93,28 @@
    "read_only": 1
   },
   {
-   "fieldname": "tier",
-   "fieldtype": "Link",
-   "label": "Tier",
-   "options": "SaaS Application Tier",
-   "in_standard_filter": 1,
-   "description": "Which priced tier of the application this employee is on. Filtered to tiers of the selected SaaS Application."
+   "fieldname": "subscription_model",
+   "fieldtype": "Data",
+   "label": "Subscription Model",
+   "fetch_from": "saas_application.subscription_model",
+   "read_only": 1,
+   "in_list_view": 1,
+   "description": "Inherited from the SaaS Application. Drives form visibility on this record."
   },
   {
-   "fieldname": "tier_name",
+   "fieldname": "tier_or_plan",
    "fieldtype": "Data",
-   "label": "Tier Name",
-   "fetch_from": "tier.tier_name",
-   "read_only": 1,
-   "in_list_view": 1
+   "label": "Tier / Plan",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "description": "e.g. \"Max\", \"Pro\", \"Enterprise\", \"Starter\", \"Free\". Free-text with autosuggest from existing values."
   },
   {
    "fieldname": "role_on_app",
    "fieldtype": "Data",
    "label": "Role on App",
-   "description": "e.g. Admin / Member / Owner",
-   "in_list_view": 1
+   "default": "Member",
+   "description": "Admin / Member / Owner. Informational."
   },
   {
    "fieldname": "access_section",
@@ -130,7 +136,8 @@
    "fieldname": "monthly_cost_share",
    "fieldtype": "Currency",
    "label": "Monthly Cost Share",
-   "options": "currency"
+   "options": "currency",
+   "description": "Optional for Shared; required for Per-User."
   },
   {
    "fieldname": "column_break_access",
@@ -143,6 +150,40 @@
    "options": "Currency",
    "default": "AED",
    "fetch_from": "saas_application.currency"
+  },
+  {
+   "fieldname": "subscription_status",
+   "fieldtype": "Select",
+   "label": "Subscription Status",
+   "options": "Active\nPaused\nCancelled",
+   "default": "Active",
+   "reqd": 1,
+   "in_standard_filter": 1,
+   "description": "Orthogonal to revoke_status. Paused = user kept the seat but isn't billing this month (e.g. parental leave); Cancelled = seat ended but credential cleanup may still be pending."
+  },
+  {
+   "fieldname": "per_user_section",
+   "fieldtype": "Section Break",
+   "label": "Per-User Contract",
+   "description": "Used only when the parent application's subscription_model = Per-User. Hidden via Client Script otherwise.",
+   "depends_on": "eval:doc.subscription_model == 'Per-User'"
+  },
+  {
+   "fieldname": "per_user_renewal_date",
+   "fieldtype": "Date",
+   "label": "Renewal Date",
+   "mandatory_depends_on": "eval:doc.subscription_model == 'Per-User'"
+  },
+  {
+   "fieldname": "column_break_per_user",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "per_user_billing_cycle",
+   "fieldtype": "Select",
+   "label": "Billing Cycle",
+   "options": "Monthly\nQuarterly\nAnnual\nMulti-year",
+   "default": "Monthly"
   },
   {
    "fieldname": "revoke_section",
@@ -181,7 +222,7 @@
   }
  ],
  "links": [],
- "modified": "2026-05-06 00:00:00",
+ "modified": "2026-05-07 00:00:00",
  "modified_by": "Administrator",
  "module": "Saas Register",
  "name": "SaaS Access",
@@ -212,6 +253,13 @@
    "write": 1
   },
   {
+   "role": "Finance Manager",
+   "read": 1,
+   "report": 1,
+   "export": 1,
+   "print": 1
+  },
+  {
    "role": "HR Manager",
    "read": 1,
    "report": 1,
@@ -223,13 +271,9 @@
    "read": 1,
    "report": 1,
    "export": 1
-  },
-  {
-   "role": "Employee Self Service",
-   "read": 1
   }
  ],
- "search_fields": "employee,employee_name,saas_application,app_name,revoke_status",
+ "search_fields": "employee,employee_name,saas_application,app_name,tier_or_plan,revoke_status",
  "show_title_field_in_link": 1,
  "sort_field": "modified",
  "sort_order": "DESC",

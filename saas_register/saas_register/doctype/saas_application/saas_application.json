@@ -2,62 +2,65 @@
  "actions": [],
  "allow_import": 1,
  "allow_rename": 1,
- "autoname": "format:SAAS-{####}",
+ "autoname": "APP-.YYYY.-.####",
  "creation": "2026-05-06 00:00:00",
  "description": "A paid SaaS application tracked for inventory, cost, seats and access.",
  "doctype": "DocType",
  "document_type": "Setup",
  "engine": "InnoDB",
  "field_order": [
-  "details_tab",
-  "details_section",
+  "identity_tab",
+  "identity_section",
   "app_name",
   "vendor",
   "category",
-  "column_break_details_main",
+  "plan",
+  "column_break_identity",
   "business_owner",
   "status",
+  "department",
+  "cost_center",
   "login_url",
-  "description_section",
-  "description",
-  "pricing_tab",
-  "totals_section",
-  "plan_summary",
-  "seats_paid",
-  "seats_active",
-  "column_break_totals",
-  "monthly_cost",
-  "annual_cost",
-  "billing_section",
-  "currency",
+  "subscription_tab",
+  "subscription_section",
+  "subscription_model",
   "billing_cycle",
-  "column_break_billing",
+  "currency",
+  "column_break_subscription",
   "renewal_date",
   "auto_renew",
-  "accounting_section",
-  "cost_center",
-  "identity_tab",
-  "sso_section",
-  "sso_status",
-  "vault_section",
-  "vault_status",
-  "column_break_vault",
-  "vault_location",
+  "seats_section",
+  "seats_paid",
+  "column_break_seats",
+  "seats_active",
+  "costs_section",
+  "monthly_cost",
+  "avg_monthly_cost",
+  "column_break_costs",
+  "invoice_reference",
+  "monthly_costs_section",
+  "monthly_costs",
+  "allocations_tab",
+  "allocations_section",
+  "cost_allocations",
   "offboarding_tab",
   "offboarding_section",
   "offboarding_steps",
   "notes_tab",
   "notes_section",
+  "description",
+  "access_notes",
+  "notes_text_section",
   "notes"
  ],
  "fields": [
   {
-   "fieldname": "details_tab",
+   "fieldname": "identity_tab",
    "fieldtype": "Tab Break",
-   "label": "Details"
+   "label": "Identity"
   },
   {
-   "fieldname": "details_section",
+   "fieldname": "identity_section",
    "fieldtype": "Section Break",
    "label": "Application"
   },
@@ -83,10 +86,17 @@
    "fieldtype": "Link",
    "label": "Category",
    "options": "SaaS Category",
-   "in_standard_filter": 1
+   "in_standard_filter": 1,
+   "in_list_view": 1
   },
   {
-   "fieldname": "column_break_details_main",
+   "fieldname": "plan",
+   "fieldtype": "Data",
+   "label": "Plan",
+   "description": "e.g. \"Business Plus\". Leave blank for mixed-tier apps — tiers go on individual SaaS Access rows."
+  },
+  {
+   "fieldname": "column_break_identity",
    "fieldtype": "Column Break"
   },
   {
@@ -94,6 +104,7 @@
    "fieldtype": "Link",
    "label": "Business Owner",
    "options": "Employee",
+   "reqd": 1,
    "in_list_view": 1,
    "in_standard_filter": 1
   },
@@ -108,81 +119,52 @@
    "in_standard_filter": 1
   },
   {
+   "fieldname": "department",
+   "fieldtype": "Link",
+   "label": "Department",
+   "options": "Department",
+   "in_standard_filter": 1
+  },
+  {
+   "fieldname": "cost_center",
+   "fieldtype": "Link",
+   "label": "Cost Center",
+   "options": "Cost Center",
+   "in_standard_filter": 1
+  },
+  {
    "fieldname": "login_url",
    "fieldtype": "Data",
    "label": "Login URL",
    "options": "URL"
   },
   {
-   "fieldname": "description_section",
-   "fieldtype": "Section Break",
-   "label": "Description",
-   "collapsible": 1
-  },
-  {
-   "fieldname": "description",
-   "fieldtype": "Small Text",
-   "label": "Description"
-  },
-  {
-   "fieldname": "pricing_tab",
+   "fieldname": "subscription_tab",
    "fieldtype": "Tab Break",
-   "label": "Pricing & Seats"
+   "label": "Subscription & Billing"
   },
   {
-   "fieldname": "totals_section",
+   "fieldname": "subscription_section",
    "fieldtype": "Section Break",
-   "label": "Totals (auto-calculated from tiers)",
-   "description": "Tiers are managed via the connection card on the right. Add or edit tiers there — these totals will refresh automatically."
+   "label": "Subscription"
   },
   {
-   "fieldname": "plan_summary",
-   "fieldtype": "Data",
-   "label": "Plan",
-   "read_only": 1,
+   "fieldname": "subscription_model",
+   "fieldtype": "Select",
+   "label": "Subscription Model",
+   "options": "Shared\nPer-User\nUsage-Based",
+   "default": "Shared",
+   "reqd": 1,
    "in_list_view": 1,
-   "description": "Auto-built from tier rows, e.g. \"Pro 12 / Team 5\""
+   "in_standard_filter": 1,
+   "description": "Shared = one contract for the company; Per-User = one contract per person (e.g. individual ChatGPT Plus); Usage-Based = no per-seat model (e.g. AWS, Twilio)."
   },
   {
-   "fieldname": "seats_paid",
-   "fieldtype": "Int",
-   "label": "Seats Paid",
-   "read_only": 1,
-   "in_list_view": 1,
-   "description": "Sum across tier rows"
-  },
-  {
-   "fieldname": "seats_active",
-   "fieldtype": "Int",
-   "label": "Seats Active",
-   "read_only": 1,
-   "in_list_view": 1,
-   "description": "Active SaaS Access rows"
-  },
-  {
-   "fieldname": "column_break_totals",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "monthly_cost",
-   "fieldtype": "Currency",
-   "label": "Monthly Cost",
-   "options": "currency",
-   "read_only": 1,
-   "in_list_view": 1,
-   "description": "Sum across tier rows"
-  },
-  {
-   "fieldname": "annual_cost",
-   "fieldtype": "Currency",
-   "label": "Annual Cost",
-   "options": "currency",
-   "read_only": 1
-  },
-  {
-   "fieldname": "billing_section",
-   "fieldtype": "Section Break",
-   "label": "Billing & Renewal"
+   "fieldname": "billing_cycle",
+   "fieldtype": "Select",
+   "label": "Billing Cycle",
+   "options": "Monthly\nQuarterly\nAnnual\nMulti-year\nUsage-Based\nCredit-Based\nOne-time",
+   "default": "Monthly"
   },
   {
    "fieldname": "currency",
@@ -192,21 +174,15 @@
    "default": "AED"
   },
   {
-   "fieldname": "billing_cycle",
-   "fieldtype": "Select",
-   "label": "Billing Cycle",
-   "options": "Monthly\nAnnual\nMulti-year",
-   "default": "Annual"
-  },
-  {
-   "fieldname": "column_break_billing",
+   "fieldname": "column_break_subscription",
    "fieldtype": "Column Break"
   },
   {
    "fieldname": "renewal_date",
    "fieldtype": "Date",
    "label": "Renewal Date",
-   "in_list_view": 1
+   "in_list_view": 1,
+   "description": "Authoritative when Shared. Hidden in the form when Per-User (each access carries its own renewal)."
   },
   {
    "fieldname": "auto_renew",
@@ -214,59 +190,90 @@
    "label": "Auto-Renew"
   },
   {
-   "fieldname": "accounting_section",
+   "fieldname": "seats_section",
    "fieldtype": "Section Break",
-   "label": "Accounting",
-   "collapsible": 1
+   "label": "Seats",
+   "description": "Used when subscription_model = Shared. Hidden via Client Script for Per-User / Usage-Based."
   },
   {
-   "fieldname": "cost_center",
-   "fieldtype": "Link",
-   "label": "Cost Center",
-   "options": "Cost Center",
-   "in_standard_filter": 1,
-   "description": "Default cost center for invoices booked against this app. Individual Purchase Invoices can override."
-  },
-  {
-   "fieldname": "identity_tab",
-   "fieldtype": "Tab Break",
-   "label": "SSO & Vault"
-  },
-  {
-   "fieldname": "sso_section",
-   "fieldtype": "Section Break",
-   "label": "Single Sign-On"
-  },
-  {
-   "fieldname": "sso_status",
-   "fieldtype": "Select",
-   "label": "SSO Status",
-   "options": "Yes - Google Workspace\nNo\nNot Applicable",
-   "default": "Not Applicable",
+   "fieldname": "seats_paid",
+   "fieldtype": "Int",
+   "label": "Seats Paid",
+   "default": 0,
    "in_list_view": 1
   },
   {
-   "fieldname": "vault_section",
-   "fieldtype": "Section Break",
-   "label": "Password Vault"
-  },
-  {
-   "fieldname": "vault_status",
-   "fieldtype": "Select",
-   "label": "Vault Status",
-   "options": "Yes\nNo\nNot Applicable",
-   "default": "Not Applicable",
-   "in_list_view": 1
-  },
-  {
-   "fieldname": "column_break_vault",
+   "fieldname": "column_break_seats",
    "fieldtype": "Column Break"
   },
   {
-   "fieldname": "vault_location",
+   "fieldname": "seats_active",
+   "fieldtype": "Int",
+   "label": "Seats Active",
+   "read_only": 1,
+   "default": 0,
+   "in_list_view": 1,
+   "description": "Auto from count of active SaaS Access records"
+  },
+  {
+   "fieldname": "costs_section",
+   "fieldtype": "Section Break",
+   "label": "Costs"
+  },
+  {
+   "fieldname": "monthly_cost",
+   "fieldtype": "Currency",
+   "label": "Monthly Cost (steady-state)",
+   "options": "currency",
+   "in_list_view": 1,
+   "description": "Contracted / expected monthly cost. Actual values per month live in the Monthly Costs table below."
+  },
+  {
+   "fieldname": "avg_monthly_cost",
+   "fieldtype": "Currency",
+   "label": "Avg Monthly Cost (last 3)",
+   "options": "currency",
+   "read_only": 1,
+   "description": "Rolling 3-month average from Monthly Costs"
+  },
+  {
+   "fieldname": "column_break_costs",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "invoice_reference",
    "fieldtype": "Data",
-   "label": "Vault Location",
-   "description": "e.g. \"1Password – Tech/Infra\""
+   "label": "Invoice Reference",
+   "description": "Free-text reference (e.g. PO-2026-014). For linked ERPNext Purchase Invoices, use the Purchase Invoice → SaaS Application field and they appear in the Billing connection card."
+  },
+  {
+   "fieldname": "monthly_costs_section",
+   "fieldtype": "Section Break",
+   "label": "Monthly Costs (time-series)",
+   "description": "Actual monthly spend. Typically edited via the Monthly Cost Entry page. (parent, month) must be unique."
+  },
+  {
+   "fieldname": "monthly_costs",
+   "fieldtype": "Table",
+   "label": "Monthly Costs",
+   "options": "SaaS Monthly Cost"
+  },
+  {
+   "fieldname": "allocations_tab",
+   "fieldtype": "Tab Break",
+   "label": "Cost Allocations"
+  },
+  {
+   "fieldname": "allocations_section",
+   "fieldtype": "Section Break",
+   "label": "Who Pays",
+   "description": "Optional. Sum of allocation_percent across rows must equal 100 when any row exists."
+  },
+  {
+   "fieldname": "cost_allocations",
+   "fieldtype": "Table",
+   "label": "Allocations",
+   "options": "SaaS Cost Allocation"
   },
   {
    "fieldname": "offboarding_tab",
@@ -292,7 +299,25 @@
   },
   {
    "fieldname": "notes_section",
-   "fieldtype": "Section Break"
+   "fieldtype": "Section Break",
+   "label": "Description & SSO / Vault"
+  },
+  {
+   "fieldname": "description",
+   "fieldtype": "Small Text",
+   "label": "Description"
+  },
+  {
+   "fieldname": "access_notes",
+   "fieldtype": "Text",
+   "label": "SSO / Vault / MFA Notes",
+   "description": "Free-text in v1 (e.g. \"SSO via Google Workspace, 1Password vault: Tech/Infra, MFA enforced\"). Phase 2 promotes to structured fields."
+  },
+  {
+   "fieldname": "notes_text_section",
+   "fieldtype": "Section Break",
+   "label": "Internal Notes",
+   "collapsible": 1
   },
   {
    "fieldname": "notes",
@@ -302,11 +327,6 @@
  ],
  "links": [
   {
-   "group": "Pricing",
-   "link_doctype": "SaaS Application Tier",
-   "link_fieldname": "saas_application"
-  },
-  {
    "group": "Access",
    "link_doctype": "SaaS Access",
    "link_fieldname": "saas_application"
@@ -315,9 +335,14 @@
    "group": "Billing",
    "link_doctype": "Purchase Invoice",
    "link_fieldname": "saas_application"
+  },
+  {
+   "group": "Workflow",
+   "link_doctype": "SaaS Action",
+   "link_fieldname": "saas_application"
   }
  ],
- "modified": "2026-05-06 00:00:00",
+ "modified": "2026-05-07 00:00:00",
  "modified_by": "Administrator",
  "module": "Saas Register",
  "name": "SaaS Application",
@@ -348,6 +373,13 @@
    "write": 1
   },
   {
+   "role": "Finance Manager",
+   "read": 1,
+   "report": 1,
+   "export": 1,
+   "print": 1
+  },
+  {
    "role": "HR Manager",
    "read": 1,
    "report": 1,
@@ -361,7 +393,7 @@
    "export": 1
   }
  ],
- "search_fields": "app_name,vendor,category,plan_summary",
+ "search_fields": "app_name,vendor,category,subscription_model,business_owner",
  "show_title_field_in_link": 1,
  "sort_field": "modified",
  "sort_order": "DESC",

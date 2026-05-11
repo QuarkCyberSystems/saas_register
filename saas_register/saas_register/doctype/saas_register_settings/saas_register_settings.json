@@ -6,17 +6,20 @@
  "engine": "InnoDB",
  "field_order": [
   "role_mapping_section",
-  "felix_user",
-  "tech_lead_user",
+  "it_manager",
+  "tech_lead",
+  "finance_manager",
   "column_break_role",
-  "dept_head_default_user",
-  "hr_user",
+  "hr_manager",
+  "dept_head",
   "defaults_section",
   "default_cost_center",
   "default_currency",
   "column_break_defaults",
   "default_offboarding_sla_days",
-  "notify_email"
+  "offboarding_alert_recipients",
+  "integration_section",
+  "n8n_webhook_base_url"
  ],
  "fields": [
   {
@@ -25,34 +28,41 @@
    "label": "Role Mapping (role_key → User)"
   },
   {
-   "fieldname": "felix_user",
+   "fieldname": "it_manager",
    "fieldtype": "Link",
-   "label": "Felix (IT)",
+   "label": "IT Manager",
    "options": "User",
-   "description": "Resolved when an offboarding step has assigned_role_key=felix"
+   "description": "Resolved when an offboarding step has assigned_role_key=it_manager. Owns offboarding projects."
   },
   {
-   "fieldname": "tech_lead_user",
+   "fieldname": "tech_lead",
    "fieldtype": "Link",
    "label": "Tech Lead",
    "options": "User"
+  },
+  {
+   "fieldname": "finance_manager",
+   "fieldtype": "Link",
+   "label": "Finance Manager",
+   "options": "User",
+   "description": "Default raiser for cost-driven SaaS Actions."
   },
   {
    "fieldname": "column_break_role",
    "fieldtype": "Column Break"
   },
   {
-   "fieldname": "dept_head_default_user",
+   "fieldname": "hr_manager",
+   "fieldtype": "Link",
+   "label": "HR Manager",
+   "options": "User"
+  },
+  {
+   "fieldname": "dept_head",
    "fieldtype": "Link",
    "label": "Department Head (default)",
    "options": "User",
-   "description": "Fallback when employee's department has no head user resolved"
-  },
-  {
-   "fieldname": "hr_user",
-   "fieldtype": "Link",
-   "label": "HR",
-   "options": "User"
+   "description": "Fallback when an employee's department has no head user resolved."
   },
   {
    "fieldname": "defaults_section",
@@ -83,16 +93,28 @@
    "default": 1
   },
   {
-   "fieldname": "notify_email",
+   "fieldname": "offboarding_alert_recipients",
+   "fieldtype": "Small Text",
+   "label": "Offboarding Alert Recipients",
+   "description": "Comma-separated emails for the resignation-trigger notification."
+  },
+  {
+   "fieldname": "integration_section",
+   "fieldtype": "Section Break",
+   "label": "Integrations",
+   "collapsible": 1
+  },
+  {
+   "fieldname": "n8n_webhook_base_url",
    "fieldtype": "Data",
-   "label": "Notification Email",
-   "options": "Email",
-   "description": "Sent a summary when an offboarding workflow is created"
+   "label": "n8n Webhook Base URL",
+   "options": "URL",
+   "description": "Optional. If set, webhook fixtures emit to this URL. If blank, no webhooks fire — the rest of the app works unaffected."
   }
  ],
  "issingle": 1,
  "links": [],
- "modified": "2026-05-06 00:00:00",
+ "modified": "2026-05-07 00:00:00",
  "modified_by": "Administrator",
  "module": "Saas Register",
  "name": "SaaS Register Settings",

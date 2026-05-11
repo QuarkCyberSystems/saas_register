@@ -28,6 +28,19 @@ def _load_sample_applications():
 	with open(SAMPLE_APPS_PATH, encoding="utf-8") as f:
 		records = json.load(f)
 
+	# Pick any existing Employee to use as a placeholder business_owner for samples.
+	# If no Employees exist yet, we skip seeding — sample data doesn't make sense
+	# without owners.
+	fallback_owner = frappe.db.get_value("Employee", {"status": "Active"}, "name") or frappe.db.get_value(
+		"Employee", {}, "name"
+	)
+	if not fallback_owner:
+		frappe.log_error(
+			title="saas_register: skipping sample seed",
+			message="No Employee exists yet — sample SaaS Applications need a business_owner.",
+		)
+		return
+
 	for record in records:
 		app_name = record.get("app_name")
 		if not app_name:
@@ -35,10 +48,7 @@ def _load_sample_applications():
 		if frappe.db.exists("SaaS Application", {"app_name": app_name}):
 			continue
 
-		# Tiers are linked docs now (not a child table on the parent), so we
-		# pop them out of the parent record and create them separately after
-		# the parent is saved.
-		tiers = record.pop("tiers", []) or []
+		record.setdefault("business_owner", fallback_owner)
 
 		try:
 			doc = frappe.get_doc(record)
@@ -49,20 +59,3 @@ def _load_sample_applications():
 				title=f"saas_register: failed to seed sample app {app_name}",
 				message=frappe.get_traceback(),
 			)
-			continue
-
-		for tier in tiers:
-			try:
-				tier_doc = frappe.get_doc(
-					{
-						"doctype": "SaaS Application Tier",
-						"saas_application": doc.name,
-						**tier,
-					}
-				)
-				tier_doc.insert(ignore_permissions=True)
-			except Exception:
-				frappe.log_error(
-					title=f"saas_register: failed to seed tier on {app_name}",
-					message=frappe.get_traceback(),
-				)

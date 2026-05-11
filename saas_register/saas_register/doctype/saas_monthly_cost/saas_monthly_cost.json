@@ -1,0 +1,84 @@
+{
+ "actions": [],
+ "allow_rename": 0,
+ "creation": "2026-05-07 00:00:00",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "month",
+  "amount",
+  "source",
+  "column_break_audit",
+  "last_edited_by",
+  "last_edited_at",
+  "notes"
+ ],
+ "fields": [
+  {
+   "fieldname": "month",
+   "fieldtype": "Date",
+   "label": "Month",
+   "reqd": 1,
+   "in_list_view": 1,
+   "columns": 2,
+   "description": "First-of-month date (e.g. 2026-03-01 = March 2026)"
+  },
+  {
+   "fieldname": "amount",
+   "fieldtype": "Currency",
+   "label": "Amount",
+   "reqd": 1,
+   "default": 0,
+   "options": "currency",
+   "in_list_view": 1,
+   "columns": 2
+  },
+  {
+   "fieldname": "source",
+   "fieldtype": "Select",
+   "label": "Source",
+   "options": "Manual\nImported\nAPI",
+   "default": "Manual",
+   "reqd": 1,
+   "in_list_view": 1,
+   "columns": 1
+  },
+  {
+   "fieldname": "column_break_audit",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "last_edited_by",
+   "fieldtype": "Link",
+   "label": "Last Edited By",
+   "options": "User",
+   "read_only": 1
+  },
+  {
+   "fieldname": "last_edited_at",
+   "fieldtype": "Datetime",
+   "label": "Last Edited At",
+   "read_only": 1
+  },
+  {
+   "fieldname": "notes",
+   "fieldtype": "Small Text",
+   "label": "Notes",
+   "in_list_view": 1,
+   "columns": 3
+  }
+ ],
+ "istable": 1,
+ "links": [],
+ "modified": "2026-05-07 00:00:00",
+ "modified_by": "Administrator",
+ "module": "Saas Register",
+ "name": "SaaS Monthly Cost",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "month",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}

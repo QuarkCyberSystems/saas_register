@@ -53,11 +53,11 @@ def _resolve_recipients(app: dict, settings) -> list[str]:
 		if owner_user:
 			recipients.append(owner_user)
 
-	if settings.felix_user and settings.felix_user not in recipients:
-		recipients.append(settings.felix_user)
+	if settings.it_manager and settings.it_manager not in recipients:
+		recipients.append(settings.it_manager)
 
-	if not recipients and settings.hr_user:
-		recipients.append(settings.hr_user)
+	if not recipients and settings.hr_manager:
+		recipients.append(settings.hr_manager)
 
 	return recipients
 

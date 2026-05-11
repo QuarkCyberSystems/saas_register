@@ -1,14 +1,16 @@
 [
  {"doctype": "SaaS Category", "name": "Productivity", "category_name": "Productivity"},
  {"doctype": "SaaS Category", "name": "Communication", "category_name": "Communication"},
- {"doctype": "SaaS Category", "name": "Development", "category_name": "Development"},
+ {"doctype": "SaaS Category", "name": "Developer Tools", "category_name": "Developer Tools"},
  {"doctype": "SaaS Category", "name": "Design", "category_name": "Design"},
  {"doctype": "SaaS Category", "name": "CRM-Sales", "category_name": "CRM-Sales"},
  {"doctype": "SaaS Category", "name": "Finance", "category_name": "Finance"},
  {"doctype": "SaaS Category", "name": "HR", "category_name": "HR"},
- {"doctype": "SaaS Category", "name": "Hosting-Infra", "category_name": "Hosting-Infra"},
- {"doctype": "SaaS Category", "name": "Web Hosting / Infrastructure", "category_name": "Web Hosting / Infrastructure"},
- {"doctype": "SaaS Category", "name": "CRM / Sales", "category_name": "CRM / Sales"},
- {"doctype": "SaaS Category", "name": "Finance / Accounting", "category_name": "Finance / Accounting"},
+ {"doctype": "SaaS Category", "name": "Hosting", "category_name": "Hosting"},
+ {"doctype": "SaaS Category", "name": "Marketing", "category_name": "Marketing"},
+ {"doctype": "SaaS Category", "name": "Operations", "category_name": "Operations"},
+ {"doctype": "SaaS Category", "name": "AI Tools", "category_name": "AI Tools"},
+ {"doctype": "SaaS Category", "name": "Security", "category_name": "Security"},
+ {"doctype": "SaaS Category", "name": "Automation", "category_name": "Automation"},
  {"doctype": "SaaS Category", "name": "Other", "category_name": "Other"}
 ]

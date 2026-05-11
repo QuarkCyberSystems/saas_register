@@ -77,7 +77,7 @@ def _create_offboarding_todos(employee) -> None:
 	settings = frappe.get_cached_doc("SaaS Register Settings")
 	sla_days = int(settings.default_offboarding_sla_days or 1)
 	due = add_days(today(), sla_days)
-	hr_fallback = settings.hr_user
+	hr_fallback = settings.hr_manager
 
 	todos_created = 0
 	rotations = 0
@@ -103,7 +103,7 @@ def _create_offboarding_todos(employee) -> None:
 			steps = [
 				{
 					"step_description": "Revoke account in admin panel",
-					"assigned_role_key": "felix",
+					"assigned_role_key": "it_manager",
 					"estimated_minutes": 5,
 					"requires_password_rotation": 0,
 					"sequence": 1,
@@ -180,12 +180,17 @@ def _create_or_update_todo(
 
 def _notify_owner(employee, app_count: int, todo_count: int, rotations: int) -> None:
 	settings = frappe.get_cached_doc("SaaS Register Settings")
-	recipient = settings.notify_email or settings.felix_user
-	if not recipient:
+	# v3: offboarding_alert_recipients is a comma-separated email list. Fall back
+	# to it_manager's user (which is an email anyway in Frappe) if not configured.
+	raw = (settings.offboarding_alert_recipients or "").strip()
+	recipients = [r.strip() for r in raw.split(",") if r.strip()]
+	if not recipients and settings.it_manager:
+		recipients = [settings.it_manager]
+	if not recipients:
 		return
 
 	frappe.sendmail(
-		recipients=[recipient],
+		recipients=recipients,
 		subject=_("Offboarding ToDos created for {0}").format(employee.employee_name or employee.name),
 		message=_(
 			"<p>Offboarding ToDos have been created.</p>"

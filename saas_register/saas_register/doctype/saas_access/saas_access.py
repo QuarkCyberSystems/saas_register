@@ -8,13 +8,10 @@ from saas_register.saas_register.doctype.saas_application.saas_application impor
 )
 
 
-REVOKED_STATES = {"Pending Revoke", "In Progress", "Revoked"}
-
-
 class SaaSAccess(Document):
 	def validate(self):
 		self.enforce_unique_active_access()
-		self.validate_tier_against_app()
+		self.enforce_per_user_requirements()
 		self.fill_revoke_metadata()
 
 	def enforce_unique_active_access(self):
@@ -33,44 +30,24 @@ class SaaSAccess(Document):
 				title=_("Duplicate Access"),
 			)
 
-	def validate_tier_against_app(self):
-		"""If a tier is set, hard-validate it belongs to the chosen application
-		and auto-derive `monthly_cost_share` from that tier's per-seat cost when
-		the user hasn't filled it in. The Link field guarantees the tier doc
-		exists; we still must check it points at the same app."""
-		if not self.tier:
+	def enforce_per_user_requirements(self):
+		"""When the parent app is `Per-User`, this access record IS the contract.
+		`per_user_renewal_date` and `monthly_cost_share` are required."""
+		model = frappe.db.get_value("SaaS Application", self.saas_application, "subscription_model")
+		if model != "Per-User":
 			return
 
-		tier = frappe.db.get_value(
-			"SaaS Application Tier",
-			self.tier,
-			["saas_application", "tier_name", "seats_paid", "monthly_cost", "currency"],
-			as_dict=True,
-		)
+		missing: list[str] = []
+		if not self.per_user_renewal_date:
+			missing.append(_("Renewal Date"))
+		if not flt(self.monthly_cost_share):
+			missing.append(_("Monthly Cost Share"))
 
-		if not tier:
-			# Link target was deleted between client load and save.
+		if missing:
 			frappe.throw(
-				_("Tier {0} no longer exists.").format(frappe.bold(self.tier)),
-				title=_("Tier Not Found"),
+				_("{0} is required when the application is Per-User.").format(", ".join(missing)),
+				title=_("Per-User fields required"),
 			)
-
-		if tier.saas_application != self.saas_application:
-			frappe.throw(
-				_("Tier {0} belongs to {1}, not {2}.").format(
-					frappe.bold(tier.tier_name),
-					frappe.bold(tier.saas_application),
-					frappe.bold(self.saas_application),
-				),
-				title=_("Tier / Application Mismatch"),
-			)
-
-		# Auto-derive per-seat cost share if user left it blank or zero.
-		if not flt(self.monthly_cost_share) and flt(tier.seats_paid):
-			self.monthly_cost_share = flt(tier.monthly_cost) / flt(tier.seats_paid)
-
-		if not self.currency and tier.currency:
-			self.currency = tier.currency
 
 	def fill_revoke_metadata(self):
 		if self.revoke_status == "Revoked":
@@ -106,3 +83,19 @@ def revoke_now(name: str, reason: str | None = None) -> dict:
 		doc.revoke_reason = reason
 	doc.save()
 	return {"name": doc.name, "revoke_status": doc.revoke_status, "revoked_date": doc.revoked_date}
+
+
+@frappe.whitelist()
+def autocomplete_tier_or_plan(saas_application: str | None = None) -> list[str]:
+	"""Return distinct tier_or_plan values for autosuggest. Scoped to one app if given."""
+	filters = {"tier_or_plan": ("not in", ["", None])}
+	if saas_application:
+		filters["saas_application"] = saas_application
+	rows = frappe.get_all(
+		"SaaS Access",
+		filters=filters,
+		fields=["tier_or_plan"],
+		distinct=True,
+		order_by="tier_or_plan",
+	)
+	return [r.tier_or_plan for r in rows if r.tier_or_plan]
