@@ -32,6 +32,7 @@ doc_events = {
 scheduler_events = {
 	"daily": [
 		"saas_register.saas_register.application_hooks.check_expiring_apps",
+		"saas_register.saas_register.application_hooks.emit_renewal_webhooks",
 	],
 }
 
@@ -58,6 +59,14 @@ fixtures = [
 	"SaaS Category",
 	{"dt": "Custom Field", "filters": [["name", "in", ["Purchase Invoice-saas_application"]]]},
 ]
+
+# Webhooks are NOT shipped as fixtures because the Webhook doctype validates
+# request_url with urlparse at save time, and our Jinja-templated URL
+# ({{ ...get_single_value('SaaS Register Settings', 'n8n_webhook_base_url') }})
+# trips that validation. The 4 webhook events from v3 §3.5 are documented in
+# README.md — admins create them once `n8n_webhook_base_url` is set in Settings.
+# Renewal-at-30/14/7-days uses `application_hooks.emit_renewal_webhooks` and
+# POSTs directly (no Webhook record needed).
 
 
 # ---------------------------------------------------------------------------

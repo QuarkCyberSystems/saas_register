@@ -1,0 +1,232 @@
+{
+ "actions": [],
+ "allow_import": 1,
+ "allow_rename": 0,
+ "autoname": "ACT-.YYYY.-.####",
+ "creation": "2026-05-07 00:00:00",
+ "description": "A cross-departmental workflow record on a SaaS Application (Keep / Reduce Seats / Cancel etc.). Has owner, state, and projected/actual savings.",
+ "doctype": "DocType",
+ "document_type": "Setup",
+ "engine": "InnoDB",
+ "field_order": [
+  "saas_application",
+  "app_name",
+  "column_break_top",
+  "action_type",
+  "status",
+  "priority",
+  "people_section",
+  "requested_by",
+  "column_break_people",
+  "assigned_to",
+  "schedule_section",
+  "due_date",
+  "linked_renewal_date",
+  "savings_section",
+  "projected_monthly_saving",
+  "column_break_savings",
+  "actual_monthly_saving",
+  "rationale_section",
+  "decision_rationale"
+ ],
+ "fields": [
+  {
+   "fieldname": "saas_application",
+   "fieldtype": "Link",
+   "label": "SaaS Application",
+   "options": "SaaS Application",
+   "reqd": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1
+  },
+  {
+   "fieldname": "app_name",
+   "fieldtype": "Data",
+   "label": "Application Name",
+   "fetch_from": "saas_application.app_name",
+   "read_only": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "column_break_top",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "action_type",
+   "fieldtype": "Select",
+   "label": "Action Type",
+   "options": "Keep\nAudit Usage\nReduce Seats\nPause-Freeze\nDowngrade Plan\nRenegotiate\nConsolidate Users\nCancel",
+   "reqd": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1
+  },
+  {
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "label": "Status",
+   "options": "Open\nIn Progress\nDone\nCancelled",
+   "default": "Open",
+   "reqd": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1
+  },
+  {
+   "fieldname": "priority",
+   "fieldtype": "Select",
+   "label": "Priority",
+   "options": "Low\nMedium\nHigh",
+   "default": "Medium",
+   "in_standard_filter": 1
+  },
+  {
+   "fieldname": "people_section",
+   "fieldtype": "Section Break",
+   "label": "People"
+  },
+  {
+   "fieldname": "requested_by",
+   "fieldtype": "Link",
+   "label": "Requested By",
+   "options": "Employee",
+   "reqd": 1,
+   "in_standard_filter": 1,
+   "description": "Typically Finance (cost-driven) or IT (operational)."
+  },
+  {
+   "fieldname": "column_break_people",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "assigned_to",
+   "fieldtype": "Link",
+   "label": "Assigned To",
+   "options": "Employee",
+   "reqd": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "description": "Executor — typically IT."
+  },
+  {
+   "fieldname": "schedule_section",
+   "fieldtype": "Section Break",
+   "label": "Schedule"
+  },
+  {
+   "fieldname": "due_date",
+   "fieldtype": "Date",
+   "label": "Due Date",
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "linked_renewal_date",
+   "fieldtype": "Date",
+   "label": "Linked Renewal Date",
+   "description": "Optional — tie this action to a specific renewal deadline so the action can't be missed."
+  },
+  {
+   "fieldname": "savings_section",
+   "fieldtype": "Section Break",
+   "label": "Savings"
+  },
+  {
+   "fieldname": "projected_monthly_saving",
+   "fieldtype": "Currency",
+   "label": "Projected Monthly Saving",
+   "default": 0,
+   "in_list_view": 1,
+   "description": "Finance roll-up: SUM where status IN ('Open','In Progress')."
+  },
+  {
+   "fieldname": "column_break_savings",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "actual_monthly_saving",
+   "fieldtype": "Currency",
+   "label": "Actual Monthly Saving",
+   "default": 0,
+   "description": "Required when status → Done. Validated server-side."
+  },
+  {
+   "fieldname": "rationale_section",
+   "fieldtype": "Section Break",
+   "label": "Decision",
+   "collapsible": 1
+  },
+  {
+   "fieldname": "decision_rationale",
+   "fieldtype": "Text",
+   "label": "Decision Rationale",
+   "description": "Free text. Legacy \"Comments\" column lands here on import."
+  }
+ ],
+ "links": [],
+ "modified": "2026-05-07 00:00:00",
+ "modified_by": "Administrator",
+ "module": "Saas Register",
+ "name": "SaaS Action",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "role": "System Manager",
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "share": 1,
+   "write": 1
+  },
+  {
+   "role": "IT Manager",
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "share": 1,
+   "write": 1
+  },
+  {
+   "role": "Finance Manager",
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "share": 1,
+   "write": 1
+  },
+  {
+   "role": "HR Manager",
+   "create": 1,
+   "read": 1,
+   "report": 1,
+   "export": 1,
+   "print": 1
+  },
+  {
+   "role": "Department Head",
+   "read": 1,
+   "report": 1,
+   "export": 1
+  }
+ ],
+ "search_fields": "saas_application,app_name,action_type,assigned_to,status",
+ "show_title_field_in_link": 1,
+ "sort_field": "due_date",
+ "sort_order": "ASC",
+ "states": [
+  {"color": "Blue", "title": "Open"},
+  {"color": "Orange", "title": "In Progress"},
+  {"color": "Green", "title": "Done"},
+  {"color": "Gray", "title": "Cancelled"}
+ ],
+ "title_field": "app_name",
+ "track_changes": 1
+}

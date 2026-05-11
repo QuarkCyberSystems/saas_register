@@ -1,0 +1,48 @@
+{
+ "charts": [],
+ "content": "[{\"id\":\"hdr\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\">SaaS — IT Operations</span>\",\"col\":12}},{\"id\":\"sb1\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"SaaS Application\",\"col\":3}},{\"id\":\"sb2\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"SaaS Access (Active)\",\"col\":3}},{\"id\":\"sb3\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Open Actions\",\"col\":3}},{\"id\":\"sb4\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Offboarding ToDos\",\"col\":3}},{\"id\":\"sp1\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"cb1\",\"type\":\"card\",\"data\":{\"card_name\":\"Inventory\",\"col\":4}},{\"id\":\"cb2\",\"type\":\"card\",\"data\":{\"card_name\":\"Reports\",\"col\":4}},{\"id\":\"cb3\",\"type\":\"card\",\"data\":{\"card_name\":\"Settings\",\"col\":4}}]",
+ "creation": "2026-05-07 00:00:00",
+ "custom_blocks": [],
+ "docstatus": 0,
+ "doctype": "Workspace",
+ "for_user": "",
+ "hide_custom": 0,
+ "icon": "tool",
+ "idx": 0,
+ "is_hidden": 0,
+ "label": "SaaS — IT Operations",
+ "links": [
+  {"hidden": 0, "is_query_report": 0, "label": "Inventory", "onboard": 0, "type": "Card Break"},
+  {"hidden": 0, "is_query_report": 0, "label": "SaaS Application", "link_to": "SaaS Application", "link_type": "DocType", "onboard": 1, "type": "Link"},
+  {"hidden": 0, "is_query_report": 0, "label": "SaaS Access", "link_to": "SaaS Access", "link_type": "DocType", "onboard": 1, "type": "Link"},
+  {"hidden": 0, "is_query_report": 0, "label": "SaaS Action", "link_to": "SaaS Action", "link_type": "DocType", "onboard": 1, "type": "Link"},
+  {"hidden": 0, "is_query_report": 0, "label": "SaaS Category", "link_to": "SaaS Category", "link_type": "DocType", "onboard": 0, "type": "Link"},
+  {"hidden": 0, "is_query_report": 0, "label": "Reports", "onboard": 0, "type": "Card Break"},
+  {"hidden": 0, "is_query_report": 1, "label": "SaaS Spend", "link_to": "SaaS Spend", "link_type": "Report", "onboard": 1, "type": "Link"},
+  {"hidden": 0, "is_query_report": 1, "label": "SaaS Spend Forecast", "link_to": "SaaS Spend Forecast", "link_type": "Report", "onboard": 0, "type": "Link"},
+  {"hidden": 0, "is_query_report": 1, "label": "SaaS Access Matrix", "link_to": "SaaS Access Matrix", "link_type": "Report", "onboard": 0, "type": "Link"},
+  {"hidden": 0, "is_query_report": 0, "label": "Settings", "onboard": 0, "type": "Card Break"},
+  {"hidden": 0, "is_query_report": 0, "label": "SaaS Register Settings", "link_to": "SaaS Register Settings", "link_type": "DocType", "onboard": 0, "type": "Link"}
+ ],
+ "modified": "2026-05-07 00:00:00",
+ "modified_by": "Administrator",
+ "module": "Saas Register",
+ "name": "SaaS — IT Operations",
+ "number_cards": [],
+ "owner": "Administrator",
+ "parent_page": "",
+ "public": 1,
+ "quick_lists": [],
+ "roles": [
+  {"role": "System Manager"},
+  {"role": "IT Manager"}
+ ],
+ "sequence_id": 50.0,
+ "shortcuts": [
+  {"doc_view": "List", "label": "SaaS Application", "link_to": "SaaS Application", "stats_filter": "{\"status\":\"Active\"}", "type": "DocType"},
+  {"doc_view": "List", "label": "SaaS Access (Active)", "link_to": "SaaS Access", "stats_filter": "{\"revoke_status\":\"Active\"}", "type": "DocType"},
+  {"doc_view": "List", "label": "Open Actions", "link_to": "SaaS Action", "stats_filter": "{\"status\":[\"in\",[\"Open\",\"In Progress\"]]}", "type": "DocType"},
+  {"doc_view": "List", "label": "Offboarding ToDos", "link_to": "ToDo", "stats_filter": "{\"reference_type\":\"SaaS Access\",\"status\":\"Open\"}", "type": "DocType"}
+ ],
+ "title": "SaaS — IT Operations"
+}
