@@ -11,6 +11,7 @@
  "field_order": [
   "saas_application",
   "app_name",
+  "linked_access",
   "column_break_top",
   "action_type",
   "status",
@@ -46,6 +47,13 @@
    "fetch_from": "saas_application.app_name",
    "read_only": 1,
    "in_list_view": 1
+  },
+  {
+   "fieldname": "linked_access",
+   "fieldtype": "Link",
+   "label": "Linked Access",
+   "options": "SaaS Access",
+   "description": "Optional. Set when the action targets a specific seat (e.g. \"Downgrade User X from Max to Pro\") rather than the whole app."
   },
   {
    "fieldname": "column_break_top",

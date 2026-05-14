@@ -332,8 +332,18 @@
    "link_fieldname": "saas_application"
   },
   {
+   "group": "Access",
+   "link_doctype": "SaaS Tier",
+   "link_fieldname": "saas_application"
+  },
+  {
    "group": "Billing",
    "link_doctype": "Purchase Invoice",
+   "link_fieldname": "saas_application"
+  },
+  {
+   "group": "Billing",
+   "link_doctype": "SaaS Monthly Cost Audit",
    "link_fieldname": "saas_application"
   },
   {

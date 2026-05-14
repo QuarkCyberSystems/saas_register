@@ -1,0 +1,171 @@
+{
+ "actions": [],
+ "allow_import": 0,
+ "allow_rename": 0,
+ "autoname": "MCA-.YYYY.-.######",
+ "creation": "2026-05-14 00:00:00",
+ "description": "Append-only audit trail of changes to SaaS Monthly Cost. Written by the auto-audit hook on insert/update/delete. Not user-editable.",
+ "doctype": "DocType",
+ "document_type": "Setup",
+ "engine": "InnoDB",
+ "field_order": [
+  "saas_application",
+  "app_name",
+  "month",
+  "action",
+  "column_break_top",
+  "edited_by",
+  "edited_at",
+  "source",
+  "values_section",
+  "old_amount",
+  "old_currency",
+  "column_break_values",
+  "new_amount",
+  "new_currency"
+ ],
+ "fields": [
+  {
+   "fieldname": "saas_application",
+   "fieldtype": "Link",
+   "label": "SaaS Application",
+   "options": "SaaS Application",
+   "reqd": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1
+  },
+  {
+   "fieldname": "app_name",
+   "fieldtype": "Data",
+   "label": "App Name",
+   "fetch_from": "saas_application.app_name",
+   "read_only": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "month",
+   "fieldtype": "Date",
+   "label": "Month",
+   "reqd": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "description": "First-of-month date."
+  },
+  {
+   "fieldname": "action",
+   "fieldtype": "Select",
+   "label": "Action",
+   "options": "Insert\nUpdate\nDelete",
+   "reqd": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1
+  },
+  {
+   "fieldname": "column_break_top",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "edited_by",
+   "fieldtype": "Link",
+   "label": "Edited By",
+   "options": "User",
+   "reqd": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1
+  },
+  {
+   "fieldname": "edited_at",
+   "fieldtype": "Datetime",
+   "label": "Edited At",
+   "reqd": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "source",
+   "fieldtype": "Select",
+   "label": "Source",
+   "options": "Manual\nImported\nAPI",
+   "reqd": 1,
+   "in_standard_filter": 1,
+   "description": "Mirrors SaaS Monthly Cost.source at the moment of the edit."
+  },
+  {
+   "fieldname": "values_section",
+   "fieldtype": "Section Break",
+   "label": "Values"
+  },
+  {
+   "fieldname": "old_amount",
+   "fieldtype": "Currency",
+   "label": "Old Amount",
+   "options": "old_currency",
+   "description": "NULL on Insert (no prior value)."
+  },
+  {
+   "fieldname": "old_currency",
+   "fieldtype": "Link",
+   "label": "Old Currency",
+   "options": "Currency",
+   "description": "NULL on Insert."
+  },
+  {
+   "fieldname": "column_break_values",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "new_amount",
+   "fieldtype": "Currency",
+   "label": "New Amount",
+   "options": "new_currency",
+   "reqd": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "new_currency",
+   "fieldtype": "Link",
+   "label": "New Currency",
+   "options": "Currency",
+   "reqd": 1
+  }
+ ],
+ "in_create": 1,
+ "links": [],
+ "modified": "2026-05-14 00:00:00",
+ "modified_by": "Administrator",
+ "module": "Saas Register",
+ "name": "SaaS Monthly Cost Audit",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "role": "System Manager",
+   "read": 1,
+   "report": 1,
+   "export": 1,
+   "print": 1
+  },
+  {
+   "role": "IT Manager",
+   "read": 1,
+   "report": 1,
+   "export": 1,
+   "print": 1
+  },
+  {
+   "role": "Finance Manager",
+   "read": 1,
+   "report": 1,
+   "export": 1,
+   "print": 1
+  },
+  {
+   "role": "HR Manager",
+   "read": 1,
+   "report": 1
+  }
+ ],
+ "search_fields": "saas_application,app_name,month,edited_by,action",
+ "sort_field": "edited_at",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 0
+}

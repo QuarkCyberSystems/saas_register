@@ -26,17 +26,26 @@ frappe.ui.form.on("SaaS Application", {
 			);
 
 			frm.add_custom_button(
-				__("Recompute Seats Active"),
+				__("Recompute"),
 				() => {
+					// Re-runs seats_active + avg_monthly_cost server-side. Useful
+					// after data migrations or when a hook didn't fire.
 					frappe.call({
-						method: "frappe.client.get_count",
-						args: {
-							doctype: "SaaS Access",
-							filters: { saas_application: frm.doc.name, revoke_status: "Active" },
-						},
+						method: "saas_register.saas_register.doctype.saas_application.saas_application.recompute",
+						args: { name: frm.doc.name },
+						freeze: true,
+						freeze_message: __("Recomputing..."),
 						callback: (r) => {
-							frm.set_value("seats_active", r.message || 0);
-							frm.save();
+							if (!r.exc) {
+								frappe.show_alert({
+									message: __("Recomputed: seats_active={0}, avg_monthly_cost={1}", [
+										r.message.seats_active,
+										format_currency(r.message.avg_monthly_cost, frm.doc.currency),
+									]),
+									indicator: "green",
+								});
+								frm.reload_doc();
+							}
 						},
 					});
 				},

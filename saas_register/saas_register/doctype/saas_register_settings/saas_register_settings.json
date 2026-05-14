@@ -17,6 +17,7 @@
   "default_currency",
   "column_break_defaults",
   "default_offboarding_sla_days",
+  "offboarding_idempotency_window_days",
   "offboarding_alert_recipients",
   "integration_section",
   "n8n_webhook_base_url"
@@ -78,9 +79,10 @@
   {
    "fieldname": "default_currency",
    "fieldtype": "Link",
-   "label": "Default Currency",
+   "label": "Base Currency",
    "options": "Currency",
-   "default": "AED"
+   "default": "AED",
+   "description": "All aggregate reports (Spend Dashboard, avg_monthly_cost) compute as SUM(amount × exchange_rate_to_base) and display in this currency. Field kept as `default_currency` for compatibility — spec refers to it as base_currency."
   },
   {
    "fieldname": "column_break_defaults",
@@ -91,6 +93,13 @@
    "fieldtype": "Int",
    "label": "Default Offboarding SLA (days)",
    "default": 1
+  },
+  {
+   "fieldname": "offboarding_idempotency_window_days",
+   "fieldtype": "Int",
+   "label": "Offboarding Idempotency Window (days)",
+   "default": 7,
+   "description": "Window during which a re-triggered resignation (e.g. status changes again within this window) won't create duplicate offboarding ToDos for the same employee."
   },
   {
    "fieldname": "offboarding_alert_recipients",

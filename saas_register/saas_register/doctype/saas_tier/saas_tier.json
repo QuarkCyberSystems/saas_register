@@ -1,0 +1,118 @@
+{
+ "actions": [],
+ "allow_import": 1,
+ "allow_rename": 1,
+ "autoname": "TIER-.####",
+ "creation": "2026-05-14 00:00:00",
+ "description": "A tier inside a SaaS Application. Solves the mixed-tier case (e.g. Claude.ai with users on both Max and Pro inside one Shared contract). Scoped per app.",
+ "doctype": "DocType",
+ "document_type": "Setup",
+ "engine": "InnoDB",
+ "field_order": [
+  "saas_application",
+  "tier_name",
+  "column_break_top",
+  "monthly_cost_per_seat",
+  "is_active",
+  "description"
+ ],
+ "fields": [
+  {
+   "fieldname": "saas_application",
+   "fieldtype": "Link",
+   "label": "SaaS Application",
+   "options": "SaaS Application",
+   "reqd": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1
+  },
+  {
+   "fieldname": "tier_name",
+   "fieldtype": "Data",
+   "label": "Tier Name",
+   "reqd": 1,
+   "in_list_view": 1,
+   "description": "e.g. \"Max\", \"Pro\", \"Enterprise\", \"Starter\", \"Free\"."
+  },
+  {
+   "fieldname": "column_break_top",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "monthly_cost_per_seat",
+   "fieldtype": "Currency",
+   "label": "Monthly Cost per Seat",
+   "in_list_view": 1,
+   "description": "Optional reference value for sanity-checking SaaS Access.monthly_cost_share."
+  },
+  {
+   "fieldname": "is_active",
+   "fieldtype": "Check",
+   "label": "Is Active",
+   "default": 1,
+   "in_list_view": 1,
+   "description": "Soft-delete pattern: inactive tiers don't appear in the SaaS Access tier picker but historical access rows pointing here stay valid."
+  },
+  {
+   "fieldname": "description",
+   "fieldtype": "Small Text",
+   "label": "Description"
+  }
+ ],
+ "links": [
+  {
+   "group": "Access",
+   "link_doctype": "SaaS Access",
+   "link_fieldname": "tier_or_plan"
+  }
+ ],
+ "modified": "2026-05-14 00:00:00",
+ "modified_by": "Administrator",
+ "module": "Saas Register",
+ "name": "SaaS Tier",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "role": "System Manager",
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "share": 1,
+   "write": 1
+  },
+  {
+   "role": "IT Manager",
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "share": 1,
+   "write": 1
+  },
+  {
+   "role": "Finance Manager",
+   "read": 1,
+   "report": 1,
+   "export": 1
+  },
+  {
+   "role": "HR Manager",
+   "read": 1,
+   "report": 1
+  }
+ ],
+ "search_fields": "saas_application,tier_name",
+ "show_title_field_in_link": 1,
+ "sort_field": "saas_application",
+ "sort_order": "ASC",
+ "states": [],
+ "title_field": "tier_name",
+ "track_changes": 1
+}

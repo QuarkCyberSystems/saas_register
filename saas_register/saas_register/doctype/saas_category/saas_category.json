@@ -9,6 +9,7 @@
  "engine": "InnoDB",
  "field_order": [
   "category_name",
+  "is_active",
   "description"
  ],
  "fields": [
@@ -19,6 +20,15 @@
    "reqd": 1,
    "unique": 1,
    "in_list_view": 1
+  },
+  {
+   "fieldname": "is_active",
+   "fieldtype": "Check",
+   "label": "Is Active",
+   "default": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "description": "Soft-delete pattern: inactive categories don't appear in the SaaS Application category picker but historical links stay valid."
   },
   {
    "fieldname": "description",

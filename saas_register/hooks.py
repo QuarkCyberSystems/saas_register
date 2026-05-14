@@ -17,10 +17,20 @@ required_apps = ["erpnext", "hrms"]
 # Document events
 # ---------------------------------------------------------------------------
 
+# NOTE: Frappe stacks `doc_events` across apps — HRMS already registers its own
+# `Employee.on_update` (publish_update, update_approver_role). Our handler is
+# additive, not an override. Frappe merges duplicate hook keys into a list
+# automatically, so no list_append shim is needed.
 doc_events = {
 	"Employee": {
 		"on_update": "saas_register.saas_register.employee_hooks.on_employee_update",
 		"after_insert": "saas_register.saas_register.employee_hooks.on_employee_update",
+	},
+	"SaaS Application": {
+		# Diff monthly_costs against the pre-save snapshot and write
+		# SaaS Monthly Cost Audit rows. Catches edits made directly on the
+		# Application form (the Monthly Cost Entry page audits its own changes).
+		"on_update": "saas_register.saas_register.cost_audit.audit_application_save",
 	},
 }
 
@@ -58,6 +68,11 @@ fixtures = [
 	{"dt": "Role", "filters": [["role_name", "in", ["IT Manager", "Finance Manager"]]]},
 	"SaaS Category",
 	{"dt": "Custom Field", "filters": [["name", "in", ["Purchase Invoice-saas_application"]]]},
+	# Workspace dashboards: number cards + charts shipped as fixtures so they
+	# import automatically on `bench migrate`. Referenced by name in the
+	# workspace JSONs' `content` blocks and `number_cards` / `charts` arrays.
+	{"dt": "Number Card", "filters": [["name", "like", "SaaS %"]]},
+	{"dt": "Dashboard Chart", "filters": [["name", "like", "SaaS %"]]},
 ]
 
 # Webhooks are NOT shipped as fixtures because the Webhook doctype validates

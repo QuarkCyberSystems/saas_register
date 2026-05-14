@@ -8,6 +8,8 @@
  "field_order": [
   "month",
   "amount",
+  "currency",
+  "exchange_rate_to_base",
   "source",
   "column_break_audit",
   "last_edited_by",
@@ -33,6 +35,25 @@
    "options": "currency",
    "in_list_view": 1,
    "columns": 2
+  },
+  {
+   "fieldname": "currency",
+   "fieldtype": "Link",
+   "label": "Currency",
+   "options": "Currency",
+   "reqd": 1,
+   "default": "AED",
+   "columns": 1,
+   "description": "Per-row currency. Lets vendors that bill in non-base currency (AWS USD, EU vendors EUR) be entered honestly; reports aggregate via exchange_rate_to_base."
+  },
+  {
+   "fieldname": "exchange_rate_to_base",
+   "fieldtype": "Float",
+   "label": "FX Rate to Base",
+   "reqd": 1,
+   "default": 1.0,
+   "precision": "6",
+   "description": "Rate from this row's currency to SaaS Register Settings.base_currency. Used by all aggregate reports."
   },
   {
    "fieldname": "source",

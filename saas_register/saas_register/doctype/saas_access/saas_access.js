@@ -7,32 +7,19 @@ function applyPerUserVisibility(frm) {
 	frm.toggle_reqd("monthly_cost_share", isPerUser);
 }
 
-async function refreshTierAutosuggest(frm) {
-	if (!frm.doc.saas_application) {
-		frm.fields_dict.tier_or_plan.df.options = "";
-		frm.refresh_field("tier_or_plan");
-		return;
-	}
-	const r = await frappe.call({
-		method: "saas_register.saas_register.doctype.saas_access.saas_access.autocomplete_tier_or_plan",
-		args: { saas_application: frm.doc.saas_application },
-	});
-	// tier_or_plan is a Data field — we use awesomplete-style helper for suggestions
-	const suggestions = r.message || [];
-	if (frm.tier_autocomplete) {
-		frm.tier_autocomplete.list = suggestions;
-		return;
-	}
-	const input = frm.fields_dict.tier_or_plan?.$input?.get(0);
-	if (input && window.Awesomplete) {
-		frm.tier_autocomplete = new Awesomplete(input, { list: suggestions, minChars: 0, autoFirst: true });
-	}
-}
-
 frappe.ui.form.on("SaaS Access", {
+	setup(frm) {
+		// Filter the Tier picker to tiers belonging to this app and still active.
+		frm.set_query("tier_or_plan", () => ({
+			filters: {
+				saas_application: frm.doc.saas_application || "",
+				is_active: 1,
+			},
+		}));
+	},
+
 	refresh(frm) {
 		applyPerUserVisibility(frm);
-		refreshTierAutosuggest(frm);
 
 		if (frm.is_new()) return;
 
@@ -80,9 +67,8 @@ frappe.ui.form.on("SaaS Access", {
 	},
 
 	saas_application(frm) {
-		// Reset tier suggestions and clear per-user-derived state when app changes.
+		// Clear the tier when the app changes — old tier won't belong to the new app.
 		frm.set_value("tier_or_plan", null);
-		refreshTierAutosuggest(frm);
 		applyPerUserVisibility(frm);
 	},
 

@@ -3,10 +3,14 @@
 The page is a Frappe Page (not a doctype) — see monthly_cost_entry.json + .js.
 Calls these methods to load/save SaaS Monthly Cost rows by (application, month).
 
-Audit trail (Phase 1):
-  - Each edit logs the old → new amount to Error Log titled "SaaS Monthly Cost
-    Audit" with a structured message. Sufficient for v1; promotes to a
-    dedicated SaaS Monthly Cost Audit doctype in Phase 1.5 (per v3 §3.2).
+Per-row currency: each SaaS Monthly Cost stores its own `currency` and
+`exchange_rate_to_base`, so AWS can bill in USD while Spend Dashboard reports
+in AED. The page picker auto-fills exchange_rate from ERPNext's Currency
+Exchange table (callers can override).
+
+Audit trail: every upsert writes a row to SaaS Monthly Cost Audit. Both insert
+(no old_amount) and update (old → new) paths are recorded with action,
+edited_by, edited_at, and source.
 """
 
 from __future__ import annotations
@@ -18,10 +22,9 @@ from difflib import SequenceMatcher
 
 import frappe
 from frappe import _
-from frappe.utils import add_months, flt, get_first_day, getdate, now
+from frappe.utils import add_months, flt, get_first_day, getdate, today
 
-
-AUDIT_TITLE = "SaaS Monthly Cost Audit"
+from saas_register.saas_register.cost_audit import write_audit
 
 
 # ---------------------------------------------------------------------------
@@ -33,11 +36,13 @@ AUDIT_TITLE = "SaaS Monthly Cost Audit"
 def get_grid(month: str, status: str = "Active", category: str | None = None) -> list[dict]:
 	"""Return one row per matching SaaS Application with:
 	- app, app_name, vendor, subscription_model, cost_center, currency
-	- expected_amount (avg of previous 3 months from monthly_costs)
+	- expected_amount (avg of previous 3 months, converted to base currency)
 	- actual_amount (this month's row if it exists)
+	- actual_currency + exchange_rate_to_base (per-row, defaults from app)
 	- notes (this month's row notes)
 	"""
 	target_month = get_first_day(getdate(month))
+	base_currency = _base_currency()
 
 	app_filters: dict = {}
 	if status and status != "All":
@@ -62,9 +67,15 @@ def get_grid(month: str, status: str = "Active", category: str | None = None) ->
 				"parenttype": "SaaS Application",
 				"month": ("in", previous_months),
 			},
-			fields=["month", "amount"],
+			fields=["month", "amount", "exchange_rate_to_base"],
 		)
-		expected = (sum(flt(h.amount) for h in hist) / len(hist)) if hist else flt(app.get("monthly_cost"))
+		# Expected (avg of last 3) is reported in base currency so the Δ column
+		# is meaningful across multi-currency apps.
+		if hist:
+			converted = [flt(h.amount) * flt(h.exchange_rate_to_base or 1.0) for h in hist]
+			expected = sum(converted) / len(converted)
+		else:
+			expected = flt(app.get("monthly_cost"))
 
 		this_month = frappe.db.get_value(
 			"SaaS Monthly Cost",
@@ -73,9 +84,12 @@ def get_grid(month: str, status: str = "Active", category: str | None = None) ->
 				"parenttype": "SaaS Application",
 				"month": target_month,
 			},
-			["amount", "notes"],
+			["amount", "notes", "currency", "exchange_rate_to_base"],
 			as_dict=True,
 		)
+
+		row_currency = (this_month and this_month.currency) or app.get("currency") or base_currency
+		row_rate = (this_month and flt(this_month.exchange_rate_to_base)) or _suggested_rate(row_currency, base_currency, target_month)
 
 		rows.append(
 			{
@@ -84,7 +98,9 @@ def get_grid(month: str, status: str = "Active", category: str | None = None) ->
 				"vendor": app["vendor"],
 				"subscription_model": app["subscription_model"],
 				"cost_center": app["cost_center"],
-				"currency": app.get("currency") or "AED",
+				"currency": row_currency,
+				"exchange_rate_to_base": row_rate,
+				"base_currency": base_currency,
 				"expected_amount": flt(expected),
 				"actual_amount": flt(this_month.amount) if this_month else None,
 				"notes": (this_month.notes if this_month else None),
@@ -101,6 +117,40 @@ def _months_before(month: date, n: int) -> list[date]:
 	return out
 
 
+def _base_currency() -> str:
+	# Settings field is still named `default_currency` for back-compat. Spec calls
+	# it base_currency; the relabel makes the role clear in the form.
+	return frappe.db.get_single_value("SaaS Register Settings", "default_currency") or "AED"
+
+
+@frappe.whitelist()
+def get_exchange_rate(from_currency: str, to_currency: str, on_date: str | None = None) -> float:
+	"""Look up the ERPNext Currency Exchange rate, falling back to 1.0 when
+	currencies match or no rate is configured."""
+	if not from_currency or not to_currency or from_currency == to_currency:
+		return 1.0
+	return _suggested_rate(from_currency, to_currency, getdate(on_date) if on_date else getdate(today()))
+
+
+def _suggested_rate(from_currency: str, to_currency: str, on_date) -> float:
+	if not from_currency or not to_currency or from_currency == to_currency:
+		return 1.0
+	# Most-recent Currency Exchange row at or before the target month.
+	rate = frappe.db.sql(
+		"""
+		SELECT exchange_rate
+		FROM `tabCurrency Exchange`
+		WHERE from_currency = %s AND to_currency = %s AND date <= %s
+		ORDER BY date DESC
+		LIMIT 1
+		""",
+		(from_currency, to_currency, on_date),
+	)
+	if rate and rate[0][0]:
+		return flt(rate[0][0])
+	return 1.0
+
+
 # ---------------------------------------------------------------------------
 # UPSERT: one cell
 # ---------------------------------------------------------------------------
@@ -111,14 +161,26 @@ def upsert_monthly_cost(
 	application: str,
 	month: str,
 	amount: float | str,
+	currency: str | None = None,
+	exchange_rate_to_base: float | str | None = None,
 	notes: str | None = None,
 ) -> dict:
-	"""Upsert a SaaS Monthly Cost row identified by (parent=application, month)."""
+	"""Upsert a SaaS Monthly Cost row identified by (parent=application, month).
+
+	Writes a SaaS Monthly Cost Audit row in the same transaction.
+	"""
 	target_month = get_first_day(getdate(month))
 	new_amount = flt(amount)
 
 	app = frappe.get_doc("SaaS Application", application)
 	frappe.has_permission("SaaS Application", "write", app, throw=True)
+
+	# Default currency from the app; exchange rate from Currency Exchange.
+	new_currency = currency or app.currency or _base_currency()
+	if exchange_rate_to_base in (None, "", 0):
+		new_rate = _suggested_rate(new_currency, _base_currency(), target_month)
+	else:
+		new_rate = flt(exchange_rate_to_base) or 1.0
 
 	existing_row = None
 	for row in (app.monthly_costs or []):
@@ -127,47 +189,56 @@ def upsert_monthly_cost(
 			break
 
 	old_amount = flt(existing_row.amount) if existing_row else None
+	old_currency = existing_row.currency if existing_row else None
+	action = "Update" if existing_row else "Insert"
 
 	if existing_row:
 		existing_row.amount = new_amount
+		existing_row.currency = new_currency
+		existing_row.exchange_rate_to_base = new_rate
 		if notes is not None:
 			existing_row.notes = notes
 		existing_row.source = "Manual"
+		existing_row.last_edited_by = frappe.session.user
+		existing_row.last_edited_at = frappe.utils.now()
 	else:
 		app.append(
 			"monthly_costs",
 			{
 				"month": target_month,
 				"amount": new_amount,
+				"currency": new_currency,
+				"exchange_rate_to_base": new_rate,
 				"source": "Manual",
 				"notes": notes or "",
+				"last_edited_by": frappe.session.user,
+				"last_edited_at": frappe.utils.now(),
 			},
 		)
 
+	# Skip the parent-diff auto-audit — we'll write the audit ourselves below
+	# with the right action label and full context.
+	app.flags.skip_cost_audit = True
 	app.save(ignore_permissions=False)
 
-	_audit(application=application, month=str(target_month), old_amount=old_amount, new_amount=new_amount)
-	return {"application": application, "month": str(target_month), "amount": new_amount}
-
-
-def _audit(*, application: str, month: str, old_amount: float | None, new_amount: float) -> None:
-	"""Phase-1 audit: log to Error Log so changes are queryable. Phase 1.5
-	promotes to a SaaS Monthly Cost Audit doctype."""
-	message = json.dumps(
-		{
-			"application": application,
-			"month": month,
-			"old_amount": old_amount,
-			"new_amount": new_amount,
-			"user": frappe.session.user,
-			"timestamp": str(now()),
-		}
+	write_audit(
+		saas_application=application,
+		month=target_month,
+		action=action,
+		old_amount=old_amount,
+		old_currency=old_currency,
+		new_amount=new_amount,
+		new_currency=new_currency,
+		source="Manual",
 	)
-	try:
-		frappe.log_error(title=AUDIT_TITLE, message=message)
-	except Exception:
-		# Never fail an upsert because audit failed.
-		pass
+
+	return {
+		"application": application,
+		"month": str(target_month),
+		"amount": new_amount,
+		"currency": new_currency,
+		"exchange_rate_to_base": new_rate,
+	}
 
 
 # ---------------------------------------------------------------------------
@@ -179,6 +250,9 @@ def _audit(*, application: str, month: str, old_amount: float | None, new_amount
 def paste_monthly_costs(month: str, rows: str | list, commit: int = 0) -> dict:
 	"""Fuzzy-match each row against SaaS Application.app_name. Returns
 	{matched, unmatched}. When commit=1, also upserts the matched rows.
+
+	Optional `currency` per row honours per-row currency; otherwise the app's
+	currency is used and the exchange rate is fetched from Currency Exchange.
 	"""
 	target_month = get_first_day(getdate(month))
 	parsed = _ensure_rows(rows)
@@ -190,6 +264,7 @@ def paste_monthly_costs(month: str, rows: str | list, commit: int = 0) -> dict:
 	for r in parsed:
 		input_name = (r.get("app_name") or "").strip()
 		amount = flt(r.get("amount"))
+		currency = (r.get("currency") or "").strip() or None
 		if not input_name:
 			continue
 
@@ -201,12 +276,18 @@ def paste_monthly_costs(month: str, rows: str | list, commit: int = 0) -> dict:
 					"app": app["name"],
 					"app_name": app["app_name"],
 					"amount": amount,
+					"currency": currency,
 				}
 			)
 			if int(commit):
-				upsert_monthly_cost(application=app["name"], month=str(target_month), amount=amount)
+				upsert_monthly_cost(
+					application=app["name"],
+					month=str(target_month),
+					amount=amount,
+					currency=currency,
+				)
 		else:
-			unmatched.append({"app_name": input_name, "amount": amount})
+			unmatched.append({"app_name": input_name, "amount": amount, "currency": currency})
 
 	return {"matched": matched, "unmatched": unmatched}
 

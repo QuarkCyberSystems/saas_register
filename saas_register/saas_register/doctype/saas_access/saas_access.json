@@ -18,6 +18,7 @@
   "subscription_model",
   "tier_or_plan",
   "role_on_app",
+  "revoke_on_offboarding",
   "access_section",
   "granted_date",
   "last_login",
@@ -103,11 +104,12 @@
   },
   {
    "fieldname": "tier_or_plan",
-   "fieldtype": "Data",
+   "fieldtype": "Link",
    "label": "Tier / Plan",
+   "options": "SaaS Tier",
    "in_list_view": 1,
    "in_standard_filter": 1,
-   "description": "e.g. \"Max\", \"Pro\", \"Enterprise\", \"Starter\", \"Free\". Free-text with autosuggest from existing values."
+   "description": "Tier this seat sits on. Filtered by the parent SaaS Application. Required when the parent app has any active tier rows."
   },
   {
    "fieldname": "role_on_app",
@@ -115,6 +117,13 @@
    "label": "Role on App",
    "default": "Member",
    "description": "Admin / Member / Owner. Informational."
+  },
+  {
+   "fieldname": "revoke_on_offboarding",
+   "fieldtype": "Check",
+   "label": "Revoke on Offboarding",
+   "default": 1,
+   "description": "When this employee leaves, should we revoke this account? Uncheck for shared service accounts (marketing@, bot users, break-glass admins) where the seat should be transferred rather than revoked. Set once at access-creation time."
   },
   {
    "fieldname": "access_section",

@@ -11,6 +11,8 @@ from saas_register.saas_register.doctype.saas_application.saas_application impor
 class SaaSAccess(Document):
 	def validate(self):
 		self.enforce_unique_active_access()
+		self.enforce_tier_belongs_to_app()
+		self.enforce_tier_required_when_tiers_exist()
 		self.enforce_per_user_requirements()
 		self.fill_revoke_metadata()
 
@@ -28,6 +30,41 @@ class SaaSAccess(Document):
 					frappe.bold(self.app_name or self.saas_application),
 				),
 				title=_("Duplicate Access"),
+			)
+
+	def enforce_tier_belongs_to_app(self):
+		"""Picker filter already does this on the form; revalidate server-side
+		so REST/import callers can't create a SaaS Access pointing at a tier
+		owned by a different app."""
+		if not self.tier_or_plan:
+			return
+		tier_app = frappe.db.get_value("SaaS Tier", self.tier_or_plan, "saas_application")
+		if tier_app and tier_app != self.saas_application:
+			frappe.throw(
+				_("Tier {0} belongs to {1}, not {2}.").format(
+					frappe.bold(self.tier_or_plan),
+					frappe.bold(tier_app),
+					frappe.bold(self.saas_application),
+				),
+				title=_("Tier / App Mismatch"),
+			)
+
+	def enforce_tier_required_when_tiers_exist(self):
+		"""If the parent app defines any active tiers, this access must pick one.
+		Apps without tiers (the majority — most Shared apps are single-tier)
+		stay unaffected."""
+		if self.tier_or_plan:
+			return
+		has_tiers = frappe.db.exists(
+			"SaaS Tier",
+			{"saas_application": self.saas_application, "is_active": 1},
+		)
+		if has_tiers:
+			frappe.throw(
+				_("Pick a tier — {0} has tier rows defined.").format(
+					frappe.bold(self.app_name or self.saas_application)
+				),
+				title=_("Tier Required"),
 			)
 
 	def enforce_per_user_requirements(self):
@@ -83,19 +120,3 @@ def revoke_now(name: str, reason: str | None = None) -> dict:
 		doc.revoke_reason = reason
 	doc.save()
 	return {"name": doc.name, "revoke_status": doc.revoke_status, "revoked_date": doc.revoked_date}
-
-
-@frappe.whitelist()
-def autocomplete_tier_or_plan(saas_application: str | None = None) -> list[str]:
-	"""Return distinct tier_or_plan values for autosuggest. Scoped to one app if given."""
-	filters = {"tier_or_plan": ("not in", ["", None])}
-	if saas_application:
-		filters["saas_application"] = saas_application
-	rows = frappe.get_all(
-		"SaaS Access",
-		filters=filters,
-		fields=["tier_or_plan"],
-		distinct=True,
-		order_by="tier_or_plan",
-	)
-	return [r.tier_or_plan for r in rows if r.tier_or_plan]

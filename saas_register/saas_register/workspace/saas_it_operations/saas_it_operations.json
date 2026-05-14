@@ -1,6 +1,10 @@
 {
- "charts": [],
- "content": "[{\"id\":\"hdr\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\">SaaS — IT Operations</span>\",\"col\":12}},{\"id\":\"sb1\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"SaaS Application\",\"col\":3}},{\"id\":\"sb2\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"SaaS Access (Active)\",\"col\":3}},{\"id\":\"sb3\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Open Actions\",\"col\":3}},{\"id\":\"sb4\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Offboarding ToDos\",\"col\":3}},{\"id\":\"sp1\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"cb1\",\"type\":\"card\",\"data\":{\"card_name\":\"Inventory\",\"col\":4}},{\"id\":\"cb2\",\"type\":\"card\",\"data\":{\"card_name\":\"Reports\",\"col\":4}},{\"id\":\"cb3\",\"type\":\"card\",\"data\":{\"card_name\":\"Settings\",\"col\":4}}]",
+ "charts": [
+  {"chart_name": "SaaS Apps by Status", "label": "SaaS Apps by Status"},
+  {"chart_name": "SaaS Apps by Subscription Model", "label": "SaaS Apps by Subscription Model"},
+  {"chart_name": "SaaS Access by Status", "label": "SaaS Access by Status"}
+ ],
+ "content": "[{\"id\":\"hdr\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\">Inventory &amp; Access</span>\",\"col\":12}},{\"id\":\"nc1\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"SaaS Active Apps\",\"col\":3}},{\"id\":\"nc2\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"SaaS Apps In Review\",\"col\":3}},{\"id\":\"nc3\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"SaaS Active Access\",\"col\":3}},{\"id\":\"nc4\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"SaaS Pending Revokes\",\"col\":3}},{\"id\":\"sp1\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"hdr2\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h5\\\">Shortcuts</span>\",\"col\":12}},{\"id\":\"sb1\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"SaaS Application\",\"col\":3}},{\"id\":\"sb2\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"SaaS Access (Active)\",\"col\":3}},{\"id\":\"sb3\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Open Actions\",\"col\":3}},{\"id\":\"sb4\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Offboarding ToDos\",\"col\":3}},{\"id\":\"sp2\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"hdr3\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h5\\\">Portfolio Mix</span>\",\"col\":12}},{\"id\":\"ch1\",\"type\":\"chart\",\"data\":{\"chart_name\":\"SaaS Apps by Status\",\"col\":4}},{\"id\":\"ch2\",\"type\":\"chart\",\"data\":{\"chart_name\":\"SaaS Apps by Subscription Model\",\"col\":4}},{\"id\":\"ch3\",\"type\":\"chart\",\"data\":{\"chart_name\":\"SaaS Access by Status\",\"col\":4}},{\"id\":\"sp3\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"cb1\",\"type\":\"card\",\"data\":{\"card_name\":\"Inventory\",\"col\":4}},{\"id\":\"cb2\",\"type\":\"card\",\"data\":{\"card_name\":\"Reports\",\"col\":4}},{\"id\":\"cb3\",\"type\":\"card\",\"data\":{\"card_name\":\"Settings\",\"col\":4}}]",
  "creation": "2026-05-07 00:00:00",
  "custom_blocks": [],
  "docstatus": 0,
@@ -10,12 +14,13 @@
  "icon": "tool",
  "idx": 0,
  "is_hidden": 0,
- "label": "SaaS — IT Operations",
+ "label": "SaaS IT Operations",
  "links": [
   {"hidden": 0, "is_query_report": 0, "label": "Inventory", "onboard": 0, "type": "Card Break"},
   {"hidden": 0, "is_query_report": 0, "label": "SaaS Application", "link_to": "SaaS Application", "link_type": "DocType", "onboard": 1, "type": "Link"},
   {"hidden": 0, "is_query_report": 0, "label": "SaaS Access", "link_to": "SaaS Access", "link_type": "DocType", "onboard": 1, "type": "Link"},
   {"hidden": 0, "is_query_report": 0, "label": "SaaS Action", "link_to": "SaaS Action", "link_type": "DocType", "onboard": 1, "type": "Link"},
+  {"hidden": 0, "is_query_report": 0, "label": "SaaS Tier", "link_to": "SaaS Tier", "link_type": "DocType", "onboard": 0, "type": "Link"},
   {"hidden": 0, "is_query_report": 0, "label": "SaaS Category", "link_to": "SaaS Category", "link_type": "DocType", "onboard": 0, "type": "Link"},
   {"hidden": 0, "is_query_report": 0, "label": "Reports", "onboard": 0, "type": "Card Break"},
   {"hidden": 0, "is_query_report": 1, "label": "SaaS Spend", "link_to": "SaaS Spend", "link_type": "Report", "onboard": 1, "type": "Link"},
@@ -25,11 +30,16 @@
   {"hidden": 0, "is_query_report": 0, "label": "Monthly Cost Entry", "link_to": "monthly-cost-entry", "link_type": "Page", "onboard": 0, "type": "Link"},
   {"hidden": 0, "is_query_report": 0, "label": "SaaS Register Settings", "link_to": "SaaS Register Settings", "link_type": "DocType", "onboard": 0, "type": "Link"}
  ],
- "modified": "2026-05-07 00:00:00",
+ "modified": "2026-05-14 00:00:00",
  "modified_by": "Administrator",
  "module": "Saas Register",
- "name": "SaaS — IT Operations",
- "number_cards": [],
+ "name": "SaaS IT Operations",
+ "number_cards": [
+  {"number_card_name": "SaaS Active Apps", "label": "SaaS Active Apps"},
+  {"number_card_name": "SaaS Apps In Review", "label": "SaaS Apps In Review"},
+  {"number_card_name": "SaaS Active Access", "label": "SaaS Active Access"},
+  {"number_card_name": "SaaS Pending Revokes", "label": "SaaS Pending Revokes"}
+ ],
  "owner": "Administrator",
  "parent_page": "",
  "public": 1,
@@ -45,5 +55,5 @@
   {"doc_view": "List", "label": "Open Actions", "link_to": "SaaS Action", "stats_filter": "{\"status\":[\"in\",[\"Open\",\"In Progress\"]]}", "type": "DocType"},
   {"doc_view": "List", "label": "Offboarding ToDos", "link_to": "ToDo", "stats_filter": "{\"reference_type\":\"SaaS Access\",\"status\":\"Open\"}", "type": "DocType"}
  ],
- "title": "SaaS — IT Operations"
+ "title": "SaaS IT Operations"
 }
