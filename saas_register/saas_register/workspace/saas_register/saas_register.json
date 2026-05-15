@@ -1,0 +1,68 @@
+{
+ "charts": [
+  {"chart_name": "SaaS Apps by Category", "label": "SaaS Apps by Category"},
+  {"chart_name": "SaaS Apps by Subscription Model", "label": "SaaS Apps by Subscription Model"}
+ ],
+ "content": "[{\"id\":\"hdr1\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\">Overview</span>\",\"col\":12}},{\"id\":\"nc1\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"SaaS Active Apps\",\"col\":3}},{\"id\":\"nc2\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"SaaS Active Access\",\"col\":3}},{\"id\":\"nc3\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"SaaS Open Actions\",\"col\":3}},{\"id\":\"nc4\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"SaaS Projected Savings\",\"col\":3}},{\"id\":\"sp1\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"hdr2\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h5\\\">Quick Actions</span>\",\"col\":12}},{\"id\":\"sb1\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Monthly Cost Entry\",\"col\":3}},{\"id\":\"sb2\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Active Apps\",\"col\":3}},{\"id\":\"sb3\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Open Actions\",\"col\":3}},{\"id\":\"sb4\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Spend Report\",\"col\":3}},{\"id\":\"sp2\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"hdr3\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h5\\\">Distribution</span>\",\"col\":12}},{\"id\":\"ch1\",\"type\":\"chart\",\"data\":{\"chart_name\":\"SaaS Apps by Category\",\"col\":6}},{\"id\":\"ch2\",\"type\":\"chart\",\"data\":{\"chart_name\":\"SaaS Apps by Subscription Model\",\"col\":6}},{\"id\":\"sp3\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"hdr4\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h5\\\">Health &amp; Risk</span>\",\"col\":12}},{\"id\":\"nc5\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"SaaS Apps In Review\",\"col\":3}},{\"id\":\"nc6\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"SaaS Pending Revokes\",\"col\":3}},{\"id\":\"nc7\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"SaaS Service Accounts\",\"col\":3}},{\"id\":\"nc8\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"SaaS Recent Resignations\",\"col\":3}},{\"id\":\"sp4\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"hdr5\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h5\\\">Manage</span>\",\"col\":12}},{\"id\":\"cb1\",\"type\":\"card\",\"data\":{\"card_name\":\"Applications\",\"col\":3}},{\"id\":\"cb2\",\"type\":\"card\",\"data\":{\"card_name\":\"Access & Tiers\",\"col\":3}},{\"id\":\"cb3\",\"type\":\"card\",\"data\":{\"card_name\":\"Cost & Audit\",\"col\":3}},{\"id\":\"cb4\",\"type\":\"card\",\"data\":{\"card_name\":\"Setup\",\"col\":3}}]",
+ "creation": "2026-05-15 00:00:00",
+ "custom_blocks": [],
+ "docstatus": 0,
+ "doctype": "Workspace",
+ "for_user": "",
+ "hide_custom": 0,
+ "icon": "organization",
+ "idx": 0,
+ "is_hidden": 0,
+ "label": "SaaS Register",
+ "links": [
+  {"hidden": 0, "is_query_report": 0, "label": "Applications", "onboard": 0, "type": "Card Break"},
+  {"hidden": 0, "is_query_report": 0, "label": "SaaS Application", "link_to": "SaaS Application", "link_type": "DocType", "onboard": 1, "type": "Link"},
+  {"hidden": 0, "is_query_report": 0, "label": "SaaS Action", "link_to": "SaaS Action", "link_type": "DocType", "onboard": 1, "type": "Link"},
+  {"hidden": 0, "is_query_report": 0, "label": "Access & Tiers", "onboard": 0, "type": "Card Break"},
+  {"hidden": 0, "is_query_report": 0, "label": "SaaS Access", "link_to": "SaaS Access", "link_type": "DocType", "onboard": 1, "type": "Link"},
+  {"hidden": 0, "is_query_report": 0, "label": "SaaS Tier", "link_to": "SaaS Tier", "link_type": "DocType", "onboard": 0, "type": "Link"},
+  {"hidden": 0, "is_query_report": 0, "label": "Employee", "link_to": "Employee", "link_type": "DocType", "onboard": 0, "type": "Link"},
+  {"hidden": 0, "is_query_report": 0, "label": "Cost & Audit", "onboard": 0, "type": "Card Break"},
+  {"hidden": 0, "is_query_report": 0, "label": "Monthly Cost Entry", "link_to": "monthly-cost-entry", "link_type": "Page", "onboard": 1, "type": "Link"},
+  {"hidden": 0, "is_query_report": 0, "label": "SaaS Monthly Cost Audit", "link_to": "SaaS Monthly Cost Audit", "link_type": "DocType", "onboard": 0, "type": "Link"},
+  {"hidden": 0, "is_query_report": 1, "label": "SaaS Spend", "link_to": "SaaS Spend", "link_type": "Report", "onboard": 0, "type": "Link"},
+  {"hidden": 0, "is_query_report": 1, "label": "SaaS Spend Forecast", "link_to": "SaaS Spend Forecast", "link_type": "Report", "onboard": 0, "type": "Link"},
+  {"hidden": 0, "is_query_report": 1, "label": "SaaS Access Matrix", "link_to": "SaaS Access Matrix", "link_type": "Report", "onboard": 0, "type": "Link"},
+  {"hidden": 0, "is_query_report": 0, "label": "Setup", "onboard": 0, "type": "Card Break"},
+  {"hidden": 0, "is_query_report": 0, "label": "SaaS Category", "link_to": "SaaS Category", "link_type": "DocType", "onboard": 0, "type": "Link"},
+  {"hidden": 0, "is_query_report": 0, "label": "SaaS Register Settings", "link_to": "SaaS Register Settings", "link_type": "DocType", "onboard": 0, "type": "Link"}
+ ],
+ "modified": "2026-05-15 00:00:00",
+ "modified_by": "Administrator",
+ "module": "Saas Register",
+ "name": "SaaS Register",
+ "number_cards": [
+  {"number_card_name": "SaaS Active Apps", "label": "SaaS Active Apps"},
+  {"number_card_name": "SaaS Active Access", "label": "SaaS Active Access"},
+  {"number_card_name": "SaaS Open Actions", "label": "SaaS Open Actions"},
+  {"number_card_name": "SaaS Projected Savings", "label": "SaaS Projected Savings"},
+  {"number_card_name": "SaaS Apps In Review", "label": "SaaS Apps In Review"},
+  {"number_card_name": "SaaS Pending Revokes", "label": "SaaS Pending Revokes"},
+  {"number_card_name": "SaaS Service Accounts", "label": "SaaS Service Accounts"},
+  {"number_card_name": "SaaS Recent Resignations", "label": "SaaS Recent Resignations"}
+ ],
+ "owner": "Administrator",
+ "parent_page": "",
+ "public": 1,
+ "quick_lists": [],
+ "roles": [
+  {"role": "System Manager"},
+  {"role": "IT Manager"},
+  {"role": "Finance Manager"},
+  {"role": "HR Manager"},
+  {"role": "Department Head"}
+ ],
+ "sequence_id": 50.0,
+ "shortcuts": [
+  {"doc_view": "", "label": "Monthly Cost Entry", "link_to": "monthly-cost-entry", "type": "Page"},
+  {"doc_view": "List", "label": "Active Apps", "link_to": "SaaS Application", "stats_filter": "{\"status\":\"Active\"}", "type": "DocType"},
+  {"doc_view": "List", "label": "Open Actions", "link_to": "SaaS Action", "stats_filter": "{\"status\":[\"in\",[\"Open\",\"In Progress\"]]}", "type": "DocType"},
+  {"label": "Spend Report", "link_to": "SaaS Spend", "type": "Report"}
+ ],
+ "title": "SaaS Register"
+}
