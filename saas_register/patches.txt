@@ -9,3 +9,4 @@ saas_register.patches.v1_0_backfill_revoke_on_offboarding
 saas_register.patches.v1_0_backfill_category_is_active
 saas_register.patches.v1_0_migrate_tier_or_plan_to_link
 saas_register.patches.v1_0_rename_workspaces_to_clean_slugs
+saas_register.patches.v1_0_cleanup_stale_sidebar

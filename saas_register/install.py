@@ -12,12 +12,26 @@ import os
 
 import frappe
 
+from saas_register.saas_register.sidebar_cleanup import cleanup_stale_sidebar
+
 
 SAMPLE_APPS_PATH = os.path.join(os.path.dirname(__file__), "sample_data", "saas_application.json")
 
 
 def after_install():
+	# Workspace JSONs sync before this hook runs, so any stale Workspace
+	# Sidebar from a prior install will already be in place — clear it so the
+	# desk auto-regenerates from current workspaces. Prevents the dreaded
+	# `sidebar_item.js: Cannot read properties of undefined (reading 'public')`.
+	cleanup_stale_sidebar()
 	_load_sample_applications()
+	frappe.db.commit()
+
+
+def after_migrate():
+	"""Re-run the sidebar cleanup on every `bench migrate` so renames are
+	self-healing. No-op when nothing is stale."""
+	cleanup_stale_sidebar()
 	frappe.db.commit()
 
 

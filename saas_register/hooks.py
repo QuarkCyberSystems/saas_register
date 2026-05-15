@@ -175,6 +175,11 @@ override_doctype_dashboards = {
 # before_install = "saas_register.install.before_install"
 after_install = "saas_register.install.after_install"
 
+# Self-heal hook: drops any stale `Workspace Sidebar` whose items reference a
+# now-missing workspace. Without this, a single dangling link kills the entire
+# desk sidebar render at sidebar_item.js:36.
+after_migrate = ["saas_register.install.after_migrate"]
+
 # Uninstallation
 # ------------
 
