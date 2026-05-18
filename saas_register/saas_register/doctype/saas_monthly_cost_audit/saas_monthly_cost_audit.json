@@ -161,6 +161,13 @@
    "role": "HR Manager",
    "read": 1,
    "report": 1
+  },
+  {
+   "role": "SaaS Manager",
+   "read": 1,
+   "report": 1,
+   "export": 1,
+   "print": 1
   }
  ],
  "search_fields": "saas_application,app_name,month,edited_by,action",
