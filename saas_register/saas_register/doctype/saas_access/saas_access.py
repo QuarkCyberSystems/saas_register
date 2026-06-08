@@ -4,6 +4,7 @@ from frappe.model.document import Document
 from frappe.utils import flt, nowdate
 
 from saas_register.saas_register.doctype.saas_application.saas_application import (
+	recompute_monthly_cost_for,
 	recompute_seats_for,
 )
 
@@ -69,15 +70,24 @@ class SaaSAccess(Document):
 
 	def enforce_per_user_requirements(self):
 		"""When the parent app is `Per-User`, this access record IS the contract.
-		`per_user_renewal_date` and `monthly_cost_share` are required."""
+		`per_user_renewal_date` is required. `monthly_cost_share` is required
+		only when the seat has no tier to price off — a tier with a per-seat
+		price (e.g. Claude's Standard/Premium) is a valid cost source, so the
+		share may be left blank and the tier price is used for the rollup."""
 		model = frappe.db.get_value("SaaS Application", self.saas_application, "subscription_model")
 		if model != "Per-User":
+			return
+
+		# Contract details only matter while the seat is actively billing.
+		# A Paused or Cancelled seat needs neither a renewal date nor a cost
+		# source, so don't block status changes that step it out of Active.
+		if self.subscription_status != "Active":
 			return
 
 		missing: list[str] = []
 		if not self.per_user_renewal_date:
 			missing.append(_("Renewal Date"))
-		if not flt(self.monthly_cost_share):
+		if not flt(self.monthly_cost_share) and not self._tier_has_price():
 			missing.append(_("Monthly Cost Share"))
 
 		if missing:
@@ -85,6 +95,12 @@ class SaaSAccess(Document):
 				_("{0} is required when the application is Per-User.").format(", ".join(missing)),
 				title=_("Per-User fields required"),
 			)
+
+	def _tier_has_price(self) -> bool:
+		"""True when this seat points at a tier carrying a per-seat price."""
+		if not self.tier_or_plan:
+			return False
+		return flt(frappe.db.get_value("SaaS Tier", self.tier_or_plan, "monthly_cost_per_seat")) > 0
 
 	def fill_revoke_metadata(self):
 		if self.revoke_status == "Revoked":
@@ -98,15 +114,19 @@ class SaaSAccess(Document):
 
 	def after_insert(self):
 		recompute_seats_for(self.saas_application)
+		recompute_monthly_cost_for(self.saas_application)
 
 	def on_update(self):
 		recompute_seats_for(self.saas_application)
+		recompute_monthly_cost_for(self.saas_application)
 		old = self.get_doc_before_save()
 		if old and old.saas_application and old.saas_application != self.saas_application:
 			recompute_seats_for(old.saas_application)
+			recompute_monthly_cost_for(old.saas_application)
 
 	def on_trash(self):
 		recompute_seats_for(self.saas_application)
+		recompute_monthly_cost_for(self.saas_application)
 
 
 @frappe.whitelist()

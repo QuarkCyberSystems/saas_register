@@ -1,9 +1,8 @@
 {
  "actions": [],
  "allow_import": 1,
- "allow_rename": 0,
  "autoname": "naming_series:",
- "creation": "2026-05-06 00:00:00",
+ "creation": "2026-06-06 17:33:16.370835",
  "doctype": "DocType",
  "document_type": "Setup",
  "engine": "InnoDB",
@@ -39,39 +38,39 @@
  ],
  "fields": [
   {
+   "default": "SAC-.YYYY.-.####",
    "fieldname": "naming_series",
    "fieldtype": "Select",
    "label": "Series",
    "options": "SAC-.YYYY.-.####",
-   "default": "SAC-.YYYY.-.####",
-   "reqd": 1,
-   "print_hide": 1
+   "print_hide": 1,
+   "reqd": 1
   },
   {
    "fieldname": "employee",
    "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
    "label": "Employee",
    "options": "Employee",
-   "reqd": 1,
-   "in_list_view": 1,
-   "in_standard_filter": 1
+   "reqd": 1
   },
   {
+   "fetch_from": "employee.employee_name",
    "fieldname": "employee_name",
    "fieldtype": "Data",
+   "in_list_view": 1,
    "label": "Employee Name",
-   "fetch_from": "employee.employee_name",
-   "read_only": 1,
-   "in_list_view": 1
+   "read_only": 1
   },
   {
+   "fetch_from": "employee.department",
    "fieldname": "department",
    "fieldtype": "Link",
+   "in_standard_filter": 1,
    "label": "Department",
    "options": "Department",
-   "fetch_from": "employee.department",
-   "read_only": 1,
-   "in_standard_filter": 1
+   "read_only": 1
   },
   {
    "fieldname": "column_break_top",
@@ -80,50 +79,50 @@
   {
    "fieldname": "saas_application",
    "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
    "label": "SaaS Application",
    "options": "SaaS Application",
-   "reqd": 1,
-   "in_list_view": 1,
-   "in_standard_filter": 1
+   "reqd": 1
   },
   {
+   "fetch_from": "saas_application.app_name",
    "fieldname": "app_name",
    "fieldtype": "Data",
    "label": "Application Name",
-   "fetch_from": "saas_application.app_name",
    "read_only": 1
   },
   {
+   "description": "Inherited from the SaaS Application. Drives form visibility on this record.",
+   "fetch_from": "saas_application.subscription_model",
    "fieldname": "subscription_model",
    "fieldtype": "Data",
-   "label": "Subscription Model",
-   "fetch_from": "saas_application.subscription_model",
-   "read_only": 1,
    "in_list_view": 1,
-   "description": "Inherited from the SaaS Application. Drives form visibility on this record."
+   "label": "Subscription Model",
+   "read_only": 1
   },
   {
+   "description": "Tier this seat sits on. Filtered by the parent SaaS Application. Required when the parent app has any active tier rows.",
    "fieldname": "tier_or_plan",
    "fieldtype": "Link",
-   "label": "Tier / Plan",
-   "options": "SaaS Tier",
    "in_list_view": 1,
    "in_standard_filter": 1,
-   "description": "Tier this seat sits on. Filtered by the parent SaaS Application. Required when the parent app has any active tier rows."
+   "label": "Tier / Plan",
+   "options": "SaaS Tier"
   },
   {
+   "default": "Member",
+   "description": "Admin / Member / Owner. Informational.",
    "fieldname": "role_on_app",
    "fieldtype": "Data",
-   "label": "Role on App",
-   "default": "Member",
-   "description": "Admin / Member / Owner. Informational."
+   "label": "Role on App"
   },
   {
+   "default": "1",
+   "description": "When this employee leaves, should we revoke this account? Uncheck for shared service accounts (marketing@, bot users, break-glass admins) where the seat should be transferred rather than revoked. Set once at access-creation time.",
    "fieldname": "revoke_on_offboarding",
    "fieldtype": "Check",
-   "label": "Revoke on Offboarding",
-   "default": 1,
-   "description": "When this employee leaves, should we revoke this account? Uncheck for shared service accounts (marketing@, bot users, break-glass admins) where the seat should be transferred rather than revoked. Set once at access-creation time."
+   "label": "Revoke on Offboarding"
   },
   {
    "fieldname": "access_section",
@@ -131,10 +130,10 @@
    "label": "Access"
   },
   {
+   "default": "Today",
    "fieldname": "granted_date",
    "fieldtype": "Date",
-   "label": "Granted Date",
-   "default": "Today"
+   "label": "Granted Date"
   },
   {
    "fieldname": "last_login",
@@ -142,57 +141,57 @@
    "label": "Last Login"
   },
   {
+   "description": "Optional for Shared; required for Per-User.",
    "fieldname": "monthly_cost_share",
    "fieldtype": "Currency",
    "label": "Monthly Cost Share",
-   "options": "currency",
-   "description": "Optional for Shared; required for Per-User."
+   "options": "currency"
   },
   {
    "fieldname": "column_break_access",
    "fieldtype": "Column Break"
   },
   {
+   "default": "AED",
+   "fetch_from": "saas_application.currency",
    "fieldname": "currency",
    "fieldtype": "Link",
    "label": "Currency",
-   "options": "Currency",
-   "default": "AED",
-   "fetch_from": "saas_application.currency"
+   "options": "Currency"
   },
   {
+   "default": "Active",
+   "description": "Orthogonal to revoke_status. Paused = user kept the seat but isn't billing this month (e.g. parental leave); Cancelled = seat ended but credential cleanup may still be pending.",
    "fieldname": "subscription_status",
    "fieldtype": "Select",
+   "in_standard_filter": 1,
    "label": "Subscription Status",
    "options": "Active\nPaused\nCancelled",
-   "default": "Active",
-   "reqd": 1,
-   "in_standard_filter": 1,
-   "description": "Orthogonal to revoke_status. Paused = user kept the seat but isn't billing this month (e.g. parental leave); Cancelled = seat ended but credential cleanup may still be pending."
+   "reqd": 1
   },
   {
+   "depends_on": "eval:doc.subscription_model == 'Per-User'",
+   "description": "Used only when the parent application's subscription_model = Per-User. Hidden via Client Script otherwise.",
    "fieldname": "per_user_section",
    "fieldtype": "Section Break",
-   "label": "Per-User Contract",
-   "description": "Used only when the parent application's subscription_model = Per-User. Hidden via Client Script otherwise.",
-   "depends_on": "eval:doc.subscription_model == 'Per-User'"
+   "label": "Per-User Contract"
   },
   {
    "fieldname": "per_user_renewal_date",
    "fieldtype": "Date",
    "label": "Renewal Date",
-   "mandatory_depends_on": "eval:doc.subscription_model == 'Per-User'"
+   "mandatory_depends_on": "eval:doc.subscription_model == 'Per-User' && doc.subscription_status == 'Active';"
   },
   {
    "fieldname": "column_break_per_user",
    "fieldtype": "Column Break"
   },
   {
+   "default": "Monthly",
    "fieldname": "per_user_billing_cycle",
    "fieldtype": "Select",
    "label": "Billing Cycle",
-   "options": "Monthly\nQuarterly\nAnnual\nMulti-year",
-   "default": "Monthly"
+   "options": "Monthly\nQuarterly\nAnnual\nMulti-year"
   },
   {
    "fieldname": "revoke_section",
@@ -200,14 +199,14 @@
    "label": "Revocation"
   },
   {
+   "default": "Active",
    "fieldname": "revoke_status",
    "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
    "label": "Revoke Status",
    "options": "Active\nPending Revoke\nIn Progress\nRevoked",
-   "default": "Active",
-   "reqd": 1,
-   "in_list_view": 1,
-   "in_standard_filter": 1
+   "reqd": 1
   },
   {
    "fieldname": "revoked_date",
@@ -231,14 +230,26 @@
   }
  ],
  "links": [],
- "modified": "2026-05-07 00:00:00",
+ "modified": "2026-06-06 20:32:13.284803",
  "modified_by": "Administrator",
  "module": "Saas Register",
  "name": "SaaS Access",
+ "naming_rule": "By \"Naming Series\" field",
  "owner": "Administrator",
  "permissions": [
   {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
    "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
    "create": 1,
    "delete": 1,
    "email": 1,
@@ -246,53 +257,43 @@
    "print": 1,
    "read": 1,
    "report": 1,
-   "share": 1,
-   "write": 1
-  },
-  {
    "role": "IT Manager",
-   "create": 1,
-   "delete": 1,
-   "email": 1,
-   "export": 1,
-   "print": 1,
-   "read": 1,
-   "report": 1,
    "share": 1,
    "write": 1
   },
   {
-   "role": "Finance Manager",
-   "read": 1,
-   "report": 1,
    "export": 1,
-   "print": 1
-  },
-  {
-   "role": "HR Manager",
+   "print": 1,
    "read": 1,
    "report": 1,
+   "role": "Finance Manager"
+  },
+  {
    "export": 1,
-   "print": 1
-  },
-  {
-   "role": "Department Head",
+   "print": 1,
    "read": 1,
    "report": 1,
-   "export": 1
+   "role": "HR Manager"
   },
   {
-   "role": "SaaS Manager",
+   "export": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Department Head"
+  },
+  {
    "create": 1,
    "email": 1,
    "export": 1,
    "print": 1,
    "read": 1,
    "report": 1,
+   "role": "SaaS Manager",
    "share": 1,
    "write": 1
   }
  ],
+ "row_format": "Dynamic",
  "search_fields": "employee,employee_name,saas_application,app_name,tier_or_plan,revoke_status",
  "show_title_field_in_link": 1,
  "sort_field": "modified",

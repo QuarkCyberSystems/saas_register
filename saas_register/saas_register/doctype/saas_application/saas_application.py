@@ -109,9 +109,87 @@ def recompute_seats_for(app_name: str):
 	frappe.db.set_value("SaaS Application", app_name, "seats_active", count, update_modified=False)
 
 
+def compute_monthly_cost(app_name: str) -> float:
+	"""Sum the per-seat cost of every *billable* SaaS Access on this app.
+
+	A row is billable when subscription_status == "Active". Paused and
+	Cancelled subscriptions don't bill this month.
+
+	Per-seat cost resolution, in order:
+	  1. The access row's own `monthly_cost_share` when > 0 (negotiated override).
+	  2. Otherwise the tier's `monthly_cost_per_seat` (the usual price source —
+	     e.g. Claude, whose access rows leave the share blank).
+	  3. Otherwise 0.
+	"""
+	rows = frappe.get_all(
+		"SaaS Access",
+		filters={
+			"saas_application": app_name,
+			"subscription_status": "Active",
+		},
+		fields=["monthly_cost_share", "tier_or_plan"],
+	)
+	tier_price: dict[str, float] = {}
+	total = 0.0
+	for row in rows:
+		share = flt(row.monthly_cost_share)
+		if share > 0:
+			total += share
+			continue
+		if row.tier_or_plan:
+			if row.tier_or_plan not in tier_price:
+				tier_price[row.tier_or_plan] = flt(
+					frappe.db.get_value("SaaS Tier", row.tier_or_plan, "monthly_cost_per_seat")
+				)
+			total += tier_price[row.tier_or_plan]
+	return flt(total)
+
+
+def recompute_monthly_cost_for(app_name: str):
+	"""Recompute and persist `monthly_cost` from this app's active access rows.
+
+	Seat-based models (Per-User, and Shared apps that define tiers) are always
+	overwritten — including down to 0 when the last seat is removed. A Shared
+	app with no tiers and no per-seat shares keeps its manually-entered flat
+	fee, and Usage-Based apps are never touched (their cost lives in the
+	monthly_costs time-series).
+	"""
+	if not app_name or not frappe.db.exists("SaaS Application", app_name):
+		return
+	model = frappe.db.get_value("SaaS Application", app_name, "subscription_model")
+	if model == "Usage-Based":
+		return
+
+	total = compute_monthly_cost(app_name)
+
+	if model == "Shared" and total == 0:
+		has_tiers = frappe.db.exists(
+			"SaaS Tier", {"saas_application": app_name, "is_active": 1}
+		)
+		if not has_tiers:
+			# Flat-fee shared contract not derived from seats — leave it alone.
+			return
+
+	frappe.db.set_value(
+		"SaaS Application", app_name, "monthly_cost", total, update_modified=False
+	)
+
+
 # ---------------------------------------------------------------------------
 # Form-button entry point (called from saas_application.js)
 # ---------------------------------------------------------------------------
+
+
+def recompute_all_monthly_costs() -> dict:
+	"""Maintenance helper: recompute `monthly_cost` for every app from its
+	active SaaS Access rows. Run after deploying the auto-cost feature, or any
+	time the field drifts. Safe to re-run (idempotent)."""
+	updated = 0
+	for name in frappe.get_all("SaaS Application", pluck="name"):
+		recompute_monthly_cost_for(name)
+		updated += 1
+	frappe.db.commit()
+	return {"apps_recomputed": updated}
 
 
 @frappe.whitelist()
@@ -124,6 +202,7 @@ def recompute(name: str) -> dict:
 	doc = frappe.get_doc("SaaS Application", name)
 	doc.check_permission("write")
 	recompute_seats_for(doc.name)
+	recompute_monthly_cost_for(doc.name)
 	doc._recompute_avg_monthly_cost()
 	frappe.db.set_value(
 		"SaaS Application",
@@ -136,5 +215,6 @@ def recompute(name: str) -> dict:
 	return {
 		"name": doc.name,
 		"seats_active": doc.seats_active,
+		"monthly_cost": doc.monthly_cost,
 		"avg_monthly_cost": doc.avg_monthly_cost,
 	}

@@ -67,33 +67,33 @@
   {
    "fieldname": "app_name",
    "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
    "label": "Application Name",
    "reqd": 1,
-   "unique": 1,
-   "in_list_view": 1,
-   "in_standard_filter": 1
+   "unique": 1
   },
   {
    "fieldname": "vendor",
    "fieldtype": "Link",
-   "label": "Vendor",
-   "options": "Supplier",
    "in_list_view": 1,
-   "in_standard_filter": 1
+   "in_standard_filter": 1,
+   "label": "Vendor",
+   "options": "Supplier"
   },
   {
    "fieldname": "category",
    "fieldtype": "Link",
-   "label": "Category",
-   "options": "SaaS Category",
+   "in_list_view": 1,
    "in_standard_filter": 1,
-   "in_list_view": 1
+   "label": "Category",
+   "options": "SaaS Category"
   },
   {
+   "description": "e.g. \"Business Plus\". Leave blank for mixed-tier apps \u2014 tiers go on individual SaaS Access rows.",
    "fieldname": "plan",
    "fieldtype": "Data",
-   "label": "Plan",
-   "description": "e.g. \"Business Plus\". Leave blank for mixed-tier apps — tiers go on individual SaaS Access rows."
+   "label": "Plan"
   },
   {
    "fieldname": "column_break_identity",
@@ -102,35 +102,34 @@
   {
    "fieldname": "business_owner",
    "fieldtype": "Link",
-   "label": "Business Owner",
-   "options": "Employee",
-   "reqd": 1,
    "in_list_view": 1,
-   "in_standard_filter": 1
+   "in_standard_filter": 1,
+   "label": "Business Owner",
+   "options": "Employee"
   },
   {
+   "default": "Active",
    "fieldname": "status",
    "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
    "label": "Status",
    "options": "Active\nReview\nKill-Replace",
-   "default": "Active",
-   "reqd": 1,
-   "in_list_view": 1,
-   "in_standard_filter": 1
+   "reqd": 1
   },
   {
    "fieldname": "department",
    "fieldtype": "Link",
+   "in_standard_filter": 1,
    "label": "Department",
-   "options": "Department",
-   "in_standard_filter": 1
+   "options": "Department"
   },
   {
    "fieldname": "cost_center",
    "fieldtype": "Link",
+   "in_standard_filter": 1,
    "label": "Cost Center",
-   "options": "Cost Center",
-   "in_standard_filter": 1
+   "options": "Cost Center"
   },
   {
    "fieldname": "login_url",
@@ -149,71 +148,72 @@
    "label": "Subscription"
   },
   {
+   "default": "Shared",
+   "description": "Shared = one contract for the company; Per-User = one contract per person (e.g. individual ChatGPT Plus); Usage-Based = no per-seat model (e.g. AWS, Twilio).",
    "fieldname": "subscription_model",
    "fieldtype": "Select",
-   "label": "Subscription Model",
-   "options": "Shared\nPer-User\nUsage-Based",
-   "default": "Shared",
-   "reqd": 1,
    "in_list_view": 1,
    "in_standard_filter": 1,
-   "description": "Shared = one contract for the company; Per-User = one contract per person (e.g. individual ChatGPT Plus); Usage-Based = no per-seat model (e.g. AWS, Twilio)."
+   "label": "Subscription Model",
+   "options": "Shared\nPer-User\nUsage-Based",
+   "reqd": 1
   },
   {
+   "default": "Monthly",
    "fieldname": "billing_cycle",
    "fieldtype": "Select",
    "label": "Billing Cycle",
-   "options": "Monthly\nQuarterly\nAnnual\nMulti-year\nUsage-Based\nCredit-Based\nOne-time",
-   "default": "Monthly"
+   "options": "Monthly\nQuarterly\nAnnual\nMulti-year\nUsage-Based\nCredit-Based\nOne-time"
   },
   {
+   "default": "AED",
    "fieldname": "currency",
    "fieldtype": "Link",
    "label": "Currency",
-   "options": "Currency",
-   "default": "AED"
+   "options": "Currency"
   },
   {
    "fieldname": "column_break_subscription",
    "fieldtype": "Column Break"
   },
   {
+   "description": "Authoritative when Shared. Hidden in the form when Per-User (each access carries its own renewal).",
    "fieldname": "renewal_date",
    "fieldtype": "Date",
-   "label": "Renewal Date",
    "in_list_view": 1,
-   "description": "Authoritative when Shared. Hidden in the form when Per-User (each access carries its own renewal)."
+   "label": "Renewal Date"
   },
   {
+   "default": "0",
    "fieldname": "auto_renew",
    "fieldtype": "Check",
    "label": "Auto-Renew"
   },
   {
+   "description": "Used when subscription_model = Shared. Hidden via Client Script for Per-User / Usage-Based.",
    "fieldname": "seats_section",
    "fieldtype": "Section Break",
-   "label": "Seats",
-   "description": "Used when subscription_model = Shared. Hidden via Client Script for Per-User / Usage-Based."
+   "label": "Seats"
   },
   {
+   "default": "0",
    "fieldname": "seats_paid",
    "fieldtype": "Int",
-   "label": "Seats Paid",
-   "default": 0,
-   "in_list_view": 1
+   "in_list_view": 1,
+   "label": "Seats Paid"
   },
   {
    "fieldname": "column_break_seats",
    "fieldtype": "Column Break"
   },
   {
+   "default": "0",
+   "description": "Auto from count of active SaaS Access records",
    "fieldname": "seats_active",
    "fieldtype": "Int",
-   "label": "Seats Active",
-   "read_only": 1,
-   "default": 0,
    "in_list_view": 1,
-   "description": "Auto from count of active SaaS Access records"
+   "label": "Seats Active",
+   "read_only": 1
   },
   {
    "fieldname": "costs_section",
@@ -221,36 +221,36 @@
    "label": "Costs"
   },
   {
+   "description": "Contracted / expected monthly cost. Actual values per month live in the Monthly Costs table below.",
    "fieldname": "monthly_cost",
    "fieldtype": "Currency",
-   "label": "Monthly Cost (steady-state)",
-   "options": "currency",
    "in_list_view": 1,
-   "description": "Contracted / expected monthly cost. Actual values per month live in the Monthly Costs table below."
+   "label": "Monthly Cost (steady-state)",
+   "options": "currency"
   },
   {
+   "description": "Rolling 3-month average from Monthly Costs",
    "fieldname": "avg_monthly_cost",
    "fieldtype": "Currency",
    "label": "Avg Monthly Cost (last 3)",
    "options": "currency",
-   "read_only": 1,
-   "description": "Rolling 3-month average from Monthly Costs"
+   "read_only": 1
   },
   {
    "fieldname": "column_break_costs",
    "fieldtype": "Column Break"
   },
   {
+   "description": "Free-text reference (e.g. PO-2026-014). For linked ERPNext Purchase Invoices, use the Purchase Invoice \u2192 SaaS Application field and they appear in the Billing connection card.",
    "fieldname": "invoice_reference",
    "fieldtype": "Data",
-   "label": "Invoice Reference",
-   "description": "Free-text reference (e.g. PO-2026-014). For linked ERPNext Purchase Invoices, use the Purchase Invoice → SaaS Application field and they appear in the Billing connection card."
+   "label": "Invoice Reference"
   },
   {
+   "description": "Actual monthly spend. Typically edited via the Monthly Cost Entry page. (parent, month) must be unique.",
    "fieldname": "monthly_costs_section",
    "fieldtype": "Section Break",
-   "label": "Monthly Costs (time-series)",
-   "description": "Actual monthly spend. Typically edited via the Monthly Cost Entry page. (parent, month) must be unique."
+   "label": "Monthly Costs (time-series)"
   },
   {
    "fieldname": "monthly_costs",
@@ -264,10 +264,10 @@
    "label": "Cost Allocations"
   },
   {
+   "description": "Optional. Sum of allocation_percent across rows must equal 100 when any row exists.",
    "fieldname": "allocations_section",
    "fieldtype": "Section Break",
-   "label": "Who Pays",
-   "description": "Optional. Sum of allocation_percent across rows must equal 100 when any row exists."
+   "label": "Who Pays"
   },
   {
    "fieldname": "cost_allocations",
@@ -281,10 +281,10 @@
    "label": "Offboarding"
   },
   {
+   "description": "Sequence of actions to perform when an employee with active access to this app is offboarded. One ToDo per step is created automatically.",
    "fieldname": "offboarding_section",
    "fieldtype": "Section Break",
-   "label": "Offboarding Steps",
-   "description": "Sequence of actions to perform when an employee with active access to this app is offboarded. One ToDo per step is created automatically."
+   "label": "Offboarding Steps"
   },
   {
    "fieldname": "offboarding_steps",
@@ -308,16 +308,16 @@
    "label": "Description"
   },
   {
+   "description": "Free-text in v1 (e.g. \"SSO via Google Workspace, 1Password vault: Tech/Infra, MFA enforced\"). Phase 2 promotes to structured fields.",
    "fieldname": "access_notes",
    "fieldtype": "Text",
-   "label": "SSO / Vault / MFA Notes",
-   "description": "Free-text in v1 (e.g. \"SSO via Google Workspace, 1Password vault: Tech/Infra, MFA enforced\"). Phase 2 promotes to structured fields."
+   "label": "SSO / Vault / MFA Notes"
   },
   {
+   "collapsible": 1,
    "fieldname": "notes_text_section",
    "fieldtype": "Section Break",
-   "label": "Internal Notes",
-   "collapsible": 1
+   "label": "Internal Notes"
   },
   {
    "fieldname": "notes",
@@ -352,14 +352,26 @@
    "link_fieldname": "saas_application"
   }
  ],
- "modified": "2026-05-07 00:00:00",
+ "modified": "2026-06-06 15:41:50.856911",
  "modified_by": "Administrator",
  "module": "Saas Register",
  "name": "SaaS Application",
+ "naming_rule": "Expression",
  "owner": "Administrator",
  "permissions": [
   {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
    "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
    "create": 1,
    "delete": 1,
    "email": 1,
@@ -367,53 +379,43 @@
    "print": 1,
    "read": 1,
    "report": 1,
-   "share": 1,
-   "write": 1
-  },
-  {
    "role": "IT Manager",
-   "create": 1,
-   "delete": 1,
-   "email": 1,
-   "export": 1,
-   "print": 1,
-   "read": 1,
-   "report": 1,
    "share": 1,
    "write": 1
   },
   {
-   "role": "Finance Manager",
-   "read": 1,
-   "report": 1,
    "export": 1,
-   "print": 1
-  },
-  {
-   "role": "HR Manager",
+   "print": 1,
    "read": 1,
    "report": 1,
+   "role": "Finance Manager"
+  },
+  {
    "export": 1,
-   "print": 1
-  },
-  {
-   "role": "Department Head",
+   "print": 1,
    "read": 1,
    "report": 1,
-   "export": 1
+   "role": "HR Manager"
   },
   {
-   "role": "SaaS Manager",
+   "export": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Department Head"
+  },
+  {
    "create": 1,
    "email": 1,
    "export": 1,
    "print": 1,
    "read": 1,
    "report": 1,
+   "role": "SaaS Manager",
    "share": 1,
    "write": 1
   }
  ],
+ "row_format": "Dynamic",
  "search_fields": "app_name,vendor,category,subscription_model,business_owner",
  "show_title_field_in_link": 1,
  "sort_field": "modified",
