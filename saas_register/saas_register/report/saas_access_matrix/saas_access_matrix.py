@@ -83,7 +83,7 @@ def _get_matrix(filters: dict) -> dict[tuple[str, str], dict]:
 	rows = frappe.get_all(
 		"SaaS Access",
 		filters=access_filters,
-		fields=["employee", "saas_application", "revoke_status", "tier_name"],
+		fields=["employee", "saas_application", "revoke_status", "tier_or_plan.tier_name as tier_name"],
 		limit_page_length=0,
 	)
 	out: dict[tuple[str, str], dict] = {}

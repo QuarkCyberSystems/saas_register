@@ -11,10 +11,22 @@ import frappe
 from frappe import _
 from frappe.model.document import Document
 
+from saas_register.saas_register.doctype.saas_application.saas_application import (
+	recompute_monthly_cost_for,
+)
+
 
 class SaaSTier(Document):
 	def validate(self):
 		self._enforce_unique_within_app()
+
+	def on_update(self):
+		# Changing a tier's per-seat price (or toggling is_active) reflows the
+		# cost of every access row sitting on it.
+		recompute_monthly_cost_for(self.saas_application)
+
+	def on_trash(self):
+		recompute_monthly_cost_for(self.saas_application)
 
 	def _enforce_unique_within_app(self):
 		existing = frappe.db.exists(

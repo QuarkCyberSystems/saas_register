@@ -14,5 +14,13 @@
   "disabled": 0,
   "is_custom": 1,
   "name": "Finance Manager"
+ },
+ {
+  "doctype": "Role",
+  "role_name": "SaaS Manager",
+  "desk_access": 1,
+  "disabled": 0,
+  "is_custom": 1,
+  "name": "SaaS Manager"
  }
 ]

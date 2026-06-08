@@ -81,7 +81,7 @@ def _rows(filters: dict) -> list[dict]:
 			seats_paid,
 			seats_active,
 			monthly_cost,
-			annual_cost,
+			(COALESCE(monthly_cost, 0) * 12) AS annual_cost,
 			renewal_date,
 			currency
 		FROM `tabSaaS Application`

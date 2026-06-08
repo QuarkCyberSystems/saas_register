@@ -65,7 +65,10 @@ has_permission = {
 # ---------------------------------------------------------------------------
 
 fixtures = [
-	{"dt": "Role", "filters": [["role_name", "in", ["IT Manager", "Finance Manager"]]]},
+	{"dt": "Role", "filters": [["role_name", "in", ["IT Manager", "Finance Manager", "SaaS Manager"]]]},
+	# Read-only access to Employee + Supplier masters for SaaS Manager.
+	# Shipped as Custom DocPerm because we can't edit the core doctype JSONs.
+	{"dt": "Custom DocPerm", "filters": [["role", "=", "SaaS Manager"]]},
 	"SaaS Category",
 	{"dt": "Custom Field", "filters": [["name", "in", ["Purchase Invoice-saas_application"]]]},
 	# Workspace dashboards: number cards + charts shipped as fixtures so they
