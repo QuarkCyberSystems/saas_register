@@ -112,13 +112,19 @@ def recompute_seats_for(app_name: str):
 def compute_monthly_cost(app_name: str) -> float:
 	"""Sum the per-seat cost of every *billable* SaaS Access on this app.
 
-	A row is billable when subscription_status == "Active". Paused and
-	Cancelled subscriptions don't bill this month.
+	A row is billable only when it is both actively subscribed
+	(subscription_status == "Active") and still provisioned
+	(revoke_status == "Active"). Paused and Cancelled subscriptions don't bill
+	this month, and neither does a revoked seat — once access is revoked the
+	seat is gone, exactly like it no longer counts toward `seats_active`. This
+	keeps `monthly_cost` and `seats_active` derived from the same set of rows.
 
 	Per-seat cost resolution, in order:
-	  1. The access row's own `monthly_cost_share` when > 0 (negotiated override).
-	  2. Otherwise the tier's `monthly_cost_per_seat` (the usual price source —
-	     e.g. Claude, whose access rows leave the share blank).
+	  1. The selected tier's `monthly_cost_per_seat` when > 0 (the primary price
+	     source — the total is the sum of the tiers users have picked).
+	  2. Otherwise the access row's own `monthly_cost_share` (fallback for a seat
+	     with no priced tier — e.g. a Per-User contract entered directly on the
+	     access, no tier attached).
 	  3. Otherwise 0.
 	"""
 	rows = frappe.get_all(
@@ -126,22 +132,25 @@ def compute_monthly_cost(app_name: str) -> float:
 		filters={
 			"saas_application": app_name,
 			"subscription_status": "Active",
+			"revoke_status": "Active",
 		},
 		fields=["monthly_cost_share", "tier_or_plan"],
 	)
 	tier_price: dict[str, float] = {}
 	total = 0.0
 	for row in rows:
-		share = flt(row.monthly_cost_share)
-		if share > 0:
-			total += share
-			continue
+		# Tier's per-seat price is the primary source. Fall back to the access
+		# row's own share only when the seat has no priced tier.
+		price = 0.0
 		if row.tier_or_plan:
 			if row.tier_or_plan not in tier_price:
 				tier_price[row.tier_or_plan] = flt(
 					frappe.db.get_value("SaaS Tier", row.tier_or_plan, "monthly_cost_per_seat")
 				)
-			total += tier_price[row.tier_or_plan]
+			price = tier_price[row.tier_or_plan]
+		if price <= 0:
+			price = flt(row.monthly_cost_share)
+		total += price
 	return flt(total)
 
 
